@@ -1,0 +1,109 @@
+<div class="page-wrapper">
+
+    <app-header logoSrc="assets/img/logo.png" [showUserBtn]="true"></app-header>
+    <app-sidebar></app-sidebar>
+    <app-breadcrumb [items]="breadcrumb"></app-breadcrumb>
+
+    <div class="contenido">
+        <section class="panel-principal">
+
+            <div class="panel-titulo">
+                <h2>Crear Evento</h2>
+            </div>
+
+            <form [formGroup]="form" (ngSubmit)="onSubmit()" class="formulario-evento">
+                <div class="form-grid">
+
+                    <!-- Columna izquierda -->
+                    <div class="form-column">
+
+                        <div class="form-group">
+                            <label>Nombre del Evento</label>
+                            <input type="text" formControlName="nombre">
+                            <span class="error" *ngIf="form.get('nombre')?.invalid && form.get('nombre')?.touched">
+                                El nombre es requerido
+                            </span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Fecha de Finalización</label>
+                            <input type="date" formControlName="fechaFin">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Descripción del evento</label>
+                            <textarea formControlName="descripcion" rows="4"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Portada</label>
+                            <div class="upload-area" (click)="fileInput.click()">
+                                <img *ngIf="imagenPreview" [src]="imagenPreview" class="preview-img">
+                                <span *ngIf="!imagenPreview" class="material-symbols-outlined">add_a_photo</span>
+                            </div>
+                            <input #fileInput type="file" hidden accept="image/*" (change)="onImagenChange($event)">
+                        </div>
+
+                    </div>
+
+                    <!-- Columna derecha -->
+                    <div class="form-column">
+
+                        <div class="form-group">
+                            <label>Fecha de Apertura</label>
+                            <input type="date" formControlName="fechaApertura">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Dirigido a</label>
+                            <select formControlName="dirigidoA" class="form-select">
+                                <option value="" disabled>Seleccione una opción</option>
+                                <option *ngFor="let op of dirigidoAOptions" [value]="op">{{ op }}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tipo de Evento</label>
+                            <select formControlName="tipoEvento" class="form-select">
+                                <option value="" disabled>Seleccione una opción</option>
+                                <option *ngFor="let op of tipoEventoOptions" [value]="op">{{ op }}</option>
+                            </select>
+                        </div>
+
+                        <!-- Horarios -->
+                        <div class="form-group">
+                            <label>Horarios Disponibles</label>
+                            <div formArrayName="horarios">
+                                <div *ngFor="let horario of horarios.controls; let i = index" [formGroupName]="i"
+                                    class="schedule-row">
+                                    <div class="time-field">
+                                        <label>Inicio</label>
+                                        <input type="time" formControlName="inicio">
+                                    </div>
+                                    <div class="time-field">
+                                        <label>Fin</label>
+                                        <input type="time" formControlName="fin">
+                                    </div>
+                                    <button type="button" class="btn-remove" (click)="eliminarHorario(i)">
+                                        <span class="material-symbols-outlined">delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-secondary" (click)="agregarHorario()">
+                                <span class="material-symbols-outlined">add_circle</span> Agregar Horario
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-guardar">Guardar</button>
+                </div>
+
+            </form>
+        </section>
+    </div>
+
+    <app-footer></app-footer>
+</div>

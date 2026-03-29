@@ -1,0 +1,65 @@
+<div class="page-wrapper" *ngIf="!eventoDetalle">
+
+    <app-header logoSrc="assets/img/logo.png">
+        <button class="login-btn" (click)="irLogin()">Login</button>
+    </app-header>
+
+    <app-breadcrumb [items]="breadcrumb"></app-breadcrumb>
+
+    <div class="container">
+
+        <div class="search">
+            <input type="text" placeholder="Buscar general..." [(ngModel)]="textoBusqueda" (input)="filtrar()">
+            <select [(ngModel)]="categoriaSeleccionada" (change)="filtrar()">
+                <option *ngFor="let cat of categorias" [value]="cat">
+                    {{ cat === 'todos' ? 'Todas las categorías' : cat }}
+                </option>
+            </select>
+        </div>
+
+        <section>
+            <h2>Eventos actuales</h2>
+            <div class="eventos" *ngIf="eventosActuales.length > 0">
+                <div class="card" *ngFor="let evento of eventosActuales" (click)="verDetalle(evento)">
+                    <img [src]="evento.img" [alt]="evento.nombre">
+                    <p>{{ evento.nombre }}</p>
+                </div>
+            </div>
+            <p class="mensaje-vacio" *ngIf="eventosActuales.length === 0">
+                No hay eventos registrados
+            </p>
+        </section>
+
+        <section>
+            <h2>Próximos eventos</h2>
+            <div class="eventos" *ngIf="proximosEventos.length > 0">
+                <div class="card" *ngFor="let evento of proximosEventos" (click)="verDetalle(evento)">
+                    <img [src]="evento.img" [alt]="evento.nombre">
+                    <p>{{ evento.nombre }}</p>
+                </div>
+            </div>
+            <p class="mensaje-vacio" *ngIf="proximosEventos.length === 0">
+                No hay eventos registrados
+            </p>
+        </section>
+
+        <section>
+            <h2>Eventos Asistidos</h2>
+            <div class="mensaje">
+                <p>Inicia sesión y no te pierdas de ningún evento</p>
+                <p>Solo se visualizan los eventos abiertos al público</p>
+            </div>
+        </section>
+
+    </div>
+
+    <app-footer></app-footer>
+</div>
+
+<!-- Detalle evento -->
+<div class="detalle" *ngIf="eventoDetalle">
+    <h2>{{ eventoDetalle.nombre }}</h2>
+    <img [src]="eventoDetalle.img" [alt]="eventoDetalle.nombre">
+    <p>{{ eventoDetalle.descripcion }}</p>
+    <button (click)="volver()">Volver</button>
+</div>

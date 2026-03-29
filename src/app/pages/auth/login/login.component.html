@@ -1,0 +1,43 @@
+<div class="login-wrapper">
+    <div class="login-container">
+
+        <div class="login-header">
+            <div class="logo-container">
+                <img src="assets/img/Escudo_unimag_sm.png" alt="Escudo Universidad">
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>Unimag Eventos</h2>
+
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+                <div class="form-group">
+                    <input type="email" formControlName="email" placeholder="tucorreo@unimagdalena.edu.co">
+                    <span class="error" *ngIf="email?.invalid && email?.touched">
+                        Ingresa un correo válido
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <input type="password" formControlName="password" placeholder="Contraseña">
+                    <span class="error" *ngIf="password?.invalid && password?.touched">
+                        La contraseña es requerida
+                    </span>
+                </div>
+
+                <button type="submit" [disabled]="loginForm.invalid || cargando">
+                    {{ cargando ? 'Iniciando...' : 'Iniciar Sesión' }}
+                </button>
+
+            </form>
+
+            <a class="guest-link" (click)="irHome()">
+                Continuar como invitado
+            </a>
+
+        </div>
+    </div>
+    <br>
+    <app-footer></app-footer>
+</div>

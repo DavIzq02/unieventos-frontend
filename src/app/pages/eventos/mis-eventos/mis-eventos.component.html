@@ -1,0 +1,118 @@
+<div class="page-wrapper">
+
+    <app-header logoSrc="assets/img/logo.png" [showUserBtn]="true"></app-header>
+    <app-sidebar></app-sidebar>
+    <app-breadcrumb [items]="breadcrumb"></app-breadcrumb>
+
+    <div class="contenido">
+        <section class="panel-principal">
+
+            <div class="panel-titulo">
+                <h2>Gestionar Eventos</h2>
+            </div>
+
+            <div class="eventos-grid">
+
+                <!-- Tarjetas de eventos -->
+                <div class="evento" *ngFor="let evento of misEventos">
+                    <div class="img-box" [class.activo]="evento.activo">
+                        <img [src]="evento.img" [alt]="evento.nombre"
+                            onerror="this.src='https://cdn-icons-png.flaticon.com/512/1055/1055687.png'">
+                        <span class="badge-activo" *ngIf="evento.activo">Activo</span>
+                    </div>
+                    <p>{{ evento.nombre }}</p>
+                    <div class="acciones">
+                        <button class="btn iniciar" (click)="iniciarEvento()">Iniciar</button>
+                        <button class="btn ver" (click)="abrirModal(evento)">Ver</button>
+                    </div>
+                </div>
+
+                <!-- Agregar evento -->
+                <div class="evento agregar-evento" (click)="irCrearEvento()">
+                    <div class="img-box agregar-box">
+                        <span class="mas">+</span>
+                    </div>
+                    <p>Agregar Evento</p>
+                </div>
+
+            </div>
+        </section>
+    </div>
+
+    <app-footer></app-footer>
+</div>
+
+<!-- Modal overlay -->
+<div class="modal-overlay" [class.hidden]="!modalAbierto" (click)="cerrarModal()">
+</div>
+
+<!-- Modal -->
+<div class="modal" [class.hidden]="!modalAbierto" *ngIf="eventoSeleccionado">
+    <div class="modal-content">
+
+        <header class="modal-header">
+            <h2>{{ eventoSeleccionado.nombre }}</h2>
+            <button class="btn-close" (click)="cerrarModal()">&times;</button>
+        </header>
+
+        <div class="modal-body">
+            <div class="modal-inner">
+
+                <!-- Imagen -->
+                <div class="modal-img" [class.hidden]="mostrarQR">
+                    <img [src]="eventoSeleccionado.img" [alt]="eventoSeleccionado.nombre"
+                        onerror="this.src='https://cdn-icons-png.flaticon.com/512/1055/1055687.png'">
+                </div>
+
+                <div class="modal-main-info">
+
+                    <!-- Descripción -->
+                    <div [class.hidden]="mostrarQR">
+                        <h3>Descripción</h3>
+                        <p id="modalDesc">{{ eventoSeleccionado.descripcion }}</p>
+                    </div>
+
+                    <!-- QR -->
+                    <div class="qr-wrapper" *ngIf="mostrarQR">
+                        <h3>QR Pre-registro</h3>
+                        <span class="material-symbols-outlined qr-icon">qr_code_2</span>
+                        <p>Escanea para registrarte</p>
+                    </div>
+
+                    <!-- Grid horarios y preinscritos -->
+                    <div class="modal-grid" [class.hidden]="mostrarQR">
+                        <div class="modal-section">
+                            <h4>Horarios</h4>
+                            <ul class="modal-list">
+                                <li *ngFor="let h of eventoSeleccionado.horarios">
+                                    {{ h.inicio }} — {{ h.fin }}
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="modal-section">
+                            <h4>Preinscritos</h4>
+                            <ul class="modal-list">
+                                <li *ngFor="let p of eventoSeleccionado.preinscritos">
+                                    {{ p }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <footer class="modal-footer">
+            <div class="footer-left">
+                <button class="btn ver" (click)="modificarEvento()">Modificar</button>
+                <button class="btn-danger" (click)="eliminarEvento()">Eliminar</button>
+                <button class="btn iniciar" (click)="iniciarEvento()">Iniciar</button>
+            </div>
+            <button class="btn-qr" (click)="toggleQR()">
+                <span class="material-symbols-outlined">qr_code_2</span>
+            </button>
+        </footer>
+
+    </div>
+</div>

@@ -1,0 +1,19 @@
+<header>
+    <div class="header-left">
+        <button *ngIf="showUserBtn" class="user-button" type="button" aria-label="Usuario" (click)="toggleSidebar()">
+            <span class="material-symbols-outlined">account_circle</span>
+        </button>
+        <ng-container *ngIf="!showUserBtn">
+            <div class="header-action">
+                <ng-content></ng-content>
+            </div>
+        </ng-container>
+    </div>
+
+    <div class="header-center">
+        <img [src]="logoSrc" class="logo" alt="Logo">
+        <h1 class="header-title">EVENTOS UNIMAGDALENA</h1>
+    </div>
+
+    <div class="header-right"></div>
+</header>

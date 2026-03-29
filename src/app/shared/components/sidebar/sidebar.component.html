@@ -1,0 +1,19 @@
+<div class="overlay" [class.oculto]="!(isOpen$ | async)" (click)="close()">
+</div>
+
+<aside class="menu-lateral" [class.activo]="isOpen$ | async">
+
+    <div class="menu-top">
+        <h3>Mi cuenta</h3>
+        <button class="btn-cerrar" type="button" (click)="close()">&times;</button>
+    </div>
+
+    <p class="usuario-nombre">{{ usuario }}</p>
+
+    <a routerLink="/dashboard" (click)="close()">Mi perfil</a>
+    <a routerLink="/eventos/mis-eventos" (click)="close()">Ver mis eventos</a>
+    <a href="#" (click)="close()">Guardados</a>
+    <a href="#" (click)="close()">Reseñas</a>
+    <a class="link-cerrar-sesion" (click)="cerrarSesion()">Cerrar sesión</a>
+
+</aside>
