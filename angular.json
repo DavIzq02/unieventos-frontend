@@ -25,6 +25,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/angular2-multiselect-dropdown/themes/default.theme.css",
               "src/styles.css"
             ],
             "scripts": []

@@ -87,6 +87,23 @@
 .link-cerrar-sesion:hover {
   background: #fff5f5 !important;
 }
+
+.foto-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 15px 0;
+}
+
+.usuario-foto {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover; /* recorta bien sin deformar */
+  object-position: center;
+  border: 3px solid #e0e0e0;
+}
+
 @media (max-width: 800px) {
   .menu-lateral {
     width: 230px;

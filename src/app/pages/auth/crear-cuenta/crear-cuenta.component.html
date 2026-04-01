@@ -1,0 +1,105 @@
+<div class="page-wrapper">
+
+    <app-header logoSrc="assets/img/logo.png" [showUserBtn]="true"></app-header>
+
+    <div class="contenido">
+        <section class="panel-principal">
+
+            <div class="panel-titulo">
+                <h2>Hola ¡{{DataNuevoUsuario.nombre}}! termina de configurar tu cuenta</h2>
+            </div>
+
+            <form class="formulario-evento">
+                <div class="form-grid">
+
+                    <!-- Columna izquierda -->
+                    <div class="form-column">
+
+                        <div class="form-group">
+                            <label>Nombre de usuario</label>
+                            <input type="text" [(ngModel)]="DataNuevoUsuario.nombreUsuario" name="nombreUsuario"
+                                #nombreUsuario="ngModel">
+                            <span class="error" *ngIf="nombreUsuario.invalid && nombreUsuario.touched">
+                                El nombre de usuario es requerido
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <label>Correo:</label>
+                            <input [disabled]="true" type="text" [(ngModel)]="DataNuevoUsuario.correo" name="correo"
+                                #correo="ngModel">
+                            <span class="error" *ngIf="correo.invalid && correo.touched">
+                                El correo es requerido
+                            </span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Eventos de interés</label>
+                            <angular2-multiselect name="listaEventosInteres" [data]="DataTipoEvento"
+                                [(ngModel)]="DataNuevoUsuario.listaEventosInteres"
+                                [settings]="multiselectEventosInteres" (onSelectAll)="onSelectAll($event)"
+                                (onDeSelectAll)="onDeSelectAll($event)" (onSelect)="onSelect($event)"
+                                (onDeSelect)="onDeSelect($event)">
+                            </angular2-multiselect>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Foto de perfil</label>
+                            <div name="urlFoto" class="upload-area" (click)="fileInput.click()">
+                                <img *ngIf="DataNuevoUsuario.foto" class="preview-img" src="{{DataNuevoUsuario.foto}}">
+                                <span *ngIf="!DataNuevoUsuario.foto"
+                                    class="material-symbols-outlined">add_a_photo</span>
+                            </div>
+                            <input #fileInput type="file" hidden accept="image/*" (change)="onImagenChange($event)">
+                            <span *ngIf="imagenSeleccionada">{{imagenSeleccionada.name}}</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-column">
+                        <div class="form-group">
+                            <label>Apellidos</label>
+                            <input type="text" [(ngModel)]="DataNuevoUsuario.apellido" name="apellido"
+                                #apellido="ngModel">
+                            <span class="error" *ngIf="apellido.invalid && apellido.touched">
+                                El apellido es requerido
+                            </span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Confirma tu contraseña:</label>
+                            <input type="text" [(ngModel)]="DataNuevoUsuario.confirmarContrasena"
+                                name="confirmarContrasena" #confirmarContrasena="ngModel">
+                            <span class="error" *ngIf="confirmarContrasena.invalid && confirmarContrasena.touched">
+                                La contraseña es requerida
+                            </span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Comunidad: </label>
+                            <angular2-multiselect name="listaComunidades" [data]="DataComunidades"
+                                [(ngModel)]="comunidadSeleccionada" [settings]="multiselectComunidades">
+                            </angular2-multiselect>
+                        </div>
+
+                        <div class="form-group" *ngIf="comunidadSeleccionada.length>0">
+                            <label>{{ comunidadSeleccionada[0].id=='1' ? 'Codigo' : 'Documento' }}</label>
+                            <input type="text" [(ngModel)]="DataNuevoUsuario.codigo" name="codigo" #codigo="ngModel">
+                            <span class="error"
+                                *ngIf="codigo.invalid && codigo.touched && comunidadSeleccionada[0].id=='1'">
+                                El codigo es requerido
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-guardar" (click)="validarFormulario()">Guardar</button>
+                </div>
+
+            </form>
+        </section>
+    </div>
+
+    <app-footer></app-footer>
+</div>

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -6,6 +6,8 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -16,14 +18,19 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
   ],
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    FormsModule,
+    AngularMultiSelectModule
   ],
   exports: [
     HeaderComponent,
     FooterComponent,
     BreadcrumbComponent,
     SidebarComponent,
-    RouterModule
-  ]
+    RouterModule,
+    FormsModule,
+    AngularMultiSelectModule
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SharedModule { }
