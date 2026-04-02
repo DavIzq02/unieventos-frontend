@@ -1,6 +1,7 @@
 <header>
     <div class="header-left">
-        <button *ngIf="showUserBtn" class="user-button" type="button" aria-label="Usuario" (click)="toggleSidebar()">
+        <button *ngIf="showUserBtn && usuario" class="user-button" type="button" aria-label="Usuario"
+            (click)="toggleSidebar()">
             <img [src]="usuario.urlFoto" (error)="onImgError($event)" alt="Foto usuario" class="usuario-foto"
                 *ngIf="usuario.urlFoto != 'not defined'">
             <span class="material-symbols-outlined" *ngIf="usuario.urlFoto == 'not defined'">account_circle</span>
