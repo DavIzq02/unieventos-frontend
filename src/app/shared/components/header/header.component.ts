@@ -15,9 +15,6 @@ export class HeaderComponent {
 
   constructor(private sidebarService: SidebarService, private authService: AuthService) {
     this.usuario = this.authService.obtenerUsuario();
-    if (this.usuario && this.usuario.urlFoto != "not defined") {
-      this.usuario.urlFoto = RutaApiService.getPath() + this.usuario.urlFoto;
-    }
   }
   onImgError(event: any) {
     event.target.src = 'assets/img/logo.png';

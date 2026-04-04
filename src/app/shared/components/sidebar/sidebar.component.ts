@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { SidebarService } from '../../../core/services/sidebar.service';
 import { AuthService } from '../../../pages/auth/auth.service';
-import { RutaApiService } from 'src/app/core/services/ruta-api.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -24,12 +23,9 @@ export class SidebarComponent implements OnInit {
   ngOnInit() {
     this.isOpen$ = this.sidebarService.isOpen$;
     this.usuario = this.authService.obtenerUsuario();
-    if (this.usuario.urlFoto != "not defined") {
-      this.usuario.urlFoto = RutaApiService.getPath() + this.usuario.urlFoto;
-    }
   }
   onImgError(event: any) {
-    event.target.src = 'assets/img/user-default.png';
+    event.target.src = 'assets/img/logo.png';
   }
   close() {
     this.sidebarService.close();
