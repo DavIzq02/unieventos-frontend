@@ -18,7 +18,7 @@ export class AuthService {
 
   private raiz = "/api/";
   private usuarioResource = RutaApiService.getPath() + this.raiz + 'usuario/';
-  private eventoResource = RutaApiService.getPath() + this.raiz + 'evento/';
+  private tipoEventoResource = RutaApiService.getPath() + this.raiz + 'tipos-eventos/';
   private comunidadResource = RutaApiService.getPath() + this.raiz + 'comunidad/';
 
   constructor(private http: HttpClient) { }
@@ -35,7 +35,7 @@ export class AuthService {
   }
 
   getTipoEventos(): Observable<JsonResponse> {
-    const rutaEventos = this.eventoResource + 'listAll';
+    const rutaEventos = this.tipoEventoResource + 'listAll';
     return this.http.get<JsonResponse>(rutaEventos)
       .pipe(catchError(err => throwError(() => err)));
   }

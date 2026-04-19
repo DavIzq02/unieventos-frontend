@@ -72,13 +72,23 @@ export class LoginComponent {
           });
         } else {
           if (res.mensaje == "Usuario no existe") {
-            const nombreUsuario = email.split('@')[0];
-            const correo = email;
-            const contrasena = password;
-            localStorage.setItem("nombreUsuario", nombreUsuario);
-            localStorage.setItem("correo", correo);
-            localStorage.setItem("contrasena", contrasena);
-            this.router.navigate(['/login/crearcuenta']);
+            Swal.fire({
+              title: res.mensaje,
+              text: "Crea tu usuario",
+              icon: 'warning',
+              confirmButtonColor: '#1f5fa8',
+              confirmButtonText: "Crear cuenta"
+            }).then(() => {
+              this.router.navigate(['/login/crearcuenta']);
+            });
+
+            // const nombreUsuario = email.split('@')[0];
+            // const correo = email;
+            // const contrasena = password;
+            // localStorage.setItem("nombreUsuario", nombreUsuario);
+            // localStorage.setItem("correo", correo);
+            // localStorage.setItem("contrasena", contrasena);
+            // this.router.navigate(['/login/crearcuenta']);
             return;
           }
           Swal.fire({

@@ -29,12 +29,26 @@ export class CrearCuentaComponent {
   multiselectComunidades: any
   multiselectEventosInteres: any
   imagenSeleccionada: any;
+  propiedadesMultiSelect = {
+    lazyLoading: true,
+    text: 'Seleccionar',
+    selectAllText: 'Seleccionar todos',
+    unSelectAllText: 'Deseleccionar todo',
+    noDataLabel: 'No se encontraron resultados',
+    classes: 'multiselect-unieventos',
+    labelKey: 'nombre',
+    primaryKey: 'id',
+    enableSearchFilter: true,
+    badgeShowLimit: 1,
+    searchBy: ['nombre'],
+    searchPlaceholderText: 'Buscar',
+  };
+
   constructor(private authService: AuthService, private router: Router) {
-    this.DataNuevoUsuario.nombre = localStorage.getItem("nombreUsuario") || "";
-    this.DataNuevoUsuario.correo = localStorage.getItem("correo") || "";
-    this.DataNuevoUsuario.contrasena = localStorage.getItem("contrasena") || "";
   }
+
   async ngOnInit(): Promise<void> {
+    localStorage.clear();
     await this.obtenerTipoEventos();
     await this.obtenerComunidades();
   }
@@ -42,44 +56,21 @@ export class CrearCuentaComponent {
   async obtenerTipoEventos(): Promise<void> {
 
     this.multiselectEventosInteres = {
-      text: 'Seleccionar',
-      selectAllText: 'Seleccionar todos',
-      unSelectAllText: 'Deseleccionar todo',
-      noDataLabel: 'No se encontraron resultados',
-      classes: 'multiselect-unieventos',
-      labelKey: 'nombre',
-      primaryKey: 'id',
-      enableSearchFilter: true,
-      badgeShowLimit: 1,
-      searchBy: ['nombre'],
-      searchPlaceholderText: 'Buscar',
-      lazyLoading: true,
+      ...this.propiedadesMultiSelect
     };
+    try {
+      const respuesta: any = await firstValueFrom(this.authService.getTipoEventos());
+      this.DataTipoEvento = respuesta.listaRespuesta;
+    } catch (error) {
+      console.error("Error al obtener los tipos de eventos", error);
+    }
 
-    this.DataTipoEvento = [
-      { id: 'Académico', nombre: 'Académico' },
-      { id: 'Cultural', nombre: 'Cultural' },
-      { id: 'Deportivo', nombre: 'Deportivo' },
-      { id: 'Social', nombre: 'Social' },
-      { id: 'Tecnológico', nombre: 'Tecnológico' },
-      { id: 'Bienestar', nombre: 'Bienestar' }
-    ];
   }
 
   async obtenerComunidades(): Promise<void> {
     this.multiselectComunidades = {
       singleSelection: true,
-      text: 'Seleccionar',
-      selectAllText: 'Seleccionar todos',
-      unSelectAllText: 'Deseleccionar todo',
-      noDataLabel: 'No se encontraron resultados',
-      classes: 'multiselect-unieventos',
-      labelKey: 'nombre',
-      primaryKey: 'id',
-      enableSearchFilter: true,
-      badgeShowLimit: 1,
-      searchBy: ['nombre'],
-      searchPlaceholderText: 'Buscar',
+      ...this.propiedadesMultiSelect
     };
     try {
       const respuesta: any = await firstValueFrom(this.authService.getComunidades());
@@ -111,11 +102,9 @@ export class CrearCuentaComponent {
     const u = this.DataNuevoUsuario;
 
     if (
-      !u.nombre?.trim() ||
-      !u.apellido?.trim() ||
       !u.nombreUsuario?.trim() ||
+      !u.apellido?.trim() ||
       !u.correo?.trim() ||
-      !u.contrasena?.trim() ||
       !u.confirmarContrasena?.trim() ||
       !u.codigo?.trim()
     ) {
@@ -149,18 +138,6 @@ export class CrearCuentaComponent {
     //   })
     //   return;
     // }
-
-    // Validar contraseñas iguales
-    if (u.contrasena !== u.confirmarContrasena) {
-      Swal.fire({
-        title: "Contraseñas no coinciden",
-        text: "Las contraseñas no coinciden",
-        icon: "warning",
-        footer: "La contraseña debe ser igual a la digitada en el login",
-        confirmButtonText: "Aceptar"
-      })
-      return;
-    }
 
     // Validar arrays
     if (!this.comunidadSeleccionada) {
@@ -200,7 +177,7 @@ export class CrearCuentaComponent {
         nombre: this.DataNuevoUsuario.nombre,
         apellido: this.DataNuevoUsuario.apellido,
         correo: this.DataNuevoUsuario.correo,
-        contrasena: this.DataNuevoUsuario.contrasena,
+        contrasena: this.DataNuevoUsuario.confirmarContrasena,
         codigo: this.DataNuevoUsuario.codigo,
         comunidad: this.DataNuevoUsuario.comunidad,
         //  listaEventosInteres: this.DataNuevoUsuario.listaEventosInteres todavia no funciona
@@ -231,6 +208,7 @@ export class CrearCuentaComponent {
           this.router.navigate(['/dashboard']);
         });
       } else {
+        console.log("RESPUESTA", respuesta)
         Swal.fire({
           title: "Error al crear usuario",
           text: respuesta.mensaje,
@@ -239,6 +217,7 @@ export class CrearCuentaComponent {
         })
       }
     } catch (error: any) {
+      console.error(error)
       Swal.fire({
         title: "Error al crear usuario",
         text: error.error.mensaje,
