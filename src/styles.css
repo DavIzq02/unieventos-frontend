@@ -7,9 +7,14 @@
   box-sizing: border-box;
   font-family: "Outfit", sans-serif;
 }
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
 
 body {
-  background-color: #f4f4f4;
+  background-color: #f5f7fa; /* Un fondo gris muy claro para contraste */
   color: #333;
   line-height: 1.6;
   font-size: 16px;
@@ -21,13 +26,16 @@ body {
 .container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   width: 100%;
+  flex: 1;
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border: 1px solid #e0e6ed;
 }
 
-#footer {
-  margin-top: auto;
-}
+
 
 h1,
 h2,
@@ -63,11 +71,13 @@ button {
 }
 
 .panel-principal {
-  background: #e9e9e9;
-  border: 2px solid #2f80c3;
-  border-radius: 22px;
+  background: white;
+  border: 1px solid #e0e6ed;
+  border-radius: 12px;
   padding: 0;
   overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
 }
 
 .panel-titulo {
@@ -87,12 +97,25 @@ button {
 
 .contenido {
   flex: 1;
-  padding: 35px;
-  background: #dcdcdc;
+  padding: 30px;
+  background: transparent; /* Ahora el fondo lo da el body o los paneles blancos */
+  display: flex;
+  flex-direction: column;
 }
 
 .oculto {
   display: none;
+}
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.page-wrapper.no-layout .contenido {
+  padding: 0;
+  background: transparent;
 }
 
 @media (max-width: 800px) {

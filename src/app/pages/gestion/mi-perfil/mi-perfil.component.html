@@ -1,0 +1,79 @@
+<div class="panel-principal">
+    <div class="panel-titulo">
+        <h2>Mi Perfil</h2>
+    </div>
+
+    <div class="perfil-container">
+        <!-- Sección de Foto -->
+        <div class="foto-seccion">
+            <div class="foto-wrapper">
+                <img [src]="usuario.urlFoto" alt="Foto de perfil" class="foto-perfil">
+                <button class="btn-cambiar-foto" (click)="cambiarFoto()" title="Cambiar foto">
+                    <span class="material-symbols-outlined">photo_camera</span>
+                </button>
+            </div>
+            <h3 class="nombre-usuario">{{ usuario.nombre }}</h3>
+            <p class="rol-usuario">Usuario Registrado</p>
+        </div>
+
+        <!-- Sección de Información -->
+        <div class="info-seccion">
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Nombres</label>
+                    <div class="info-valor">
+                        <span class="material-symbols-outlined icon-small">person</span>
+                        {{ usuario.nombre }}
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <label>Apellidos</label>
+                    <div class="info-valor">
+                        <span class="material-symbols-outlined icon-small">person</span>
+                        {{ usuario.apellido }}
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <label>Correo Electrónico</label>
+                    <div class="info-valor">
+                        <span class="material-symbols-outlined icon-small">mail</span>
+                        {{ usuario.correo }}
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <label>Documento / Codigo</label>
+                    <div class="info-valor">
+                        <span class="material-symbols-outlined icon-small">badge</span>
+                        {{ usuario.codigo }}
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <label>Comunidad</label>
+                    <div class="info-valor">
+                        <span class="material-symbols-outlined icon-small">groups</span>
+                        {{ usuario.comunidad.nombre }}
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <label>Rol</label>
+                    <div class="info-valor">
+                        <span class="material-symbols-outlined icon-small">badge</span>
+                        {{ usuario.rol.nombre }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="acciones-perfil">
+                <button class="btn-editar">
+                    <span class="material-symbols-outlined">edit</span>
+                    Editar Información
+                </button>
+            </div> -->
+        </div>
+    </div>
+</div>

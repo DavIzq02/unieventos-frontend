@@ -1,0 +1,137 @@
+<div class="container">
+    <div class="header">
+        <h1>Gestión de Usuarios</h1>
+        <button class="btn-crear" (click)="abrirModalCrear()">
+            <span class="material-symbols-outlined">person_add</span>
+            Crear Usuario
+        </button>
+    </div>
+
+    <div class="table-container">
+        <table class="usuarios-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th>Comunidad</th>
+                    <th>Estado</th>
+                    <th>Calificación</th>
+                    <th>Modificar</th>
+                    <th>Ver</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let usuario of listaUsuarios">
+                    <td>{{ usuario.codigo }}</td>
+                    <td>{{ usuario.nombre }}</td>
+                    <td>{{ usuario.apellido }}</td>
+                    <td>{{ usuario.correo }}</td>
+                    <td>
+                        <span class="badge"
+                            [ngClass]="{'badge-admin': usuario.rol.id === 1, 'badge-user': usuario.rol.id === 2}">
+                            {{ usuario.rol.nombre }}
+                        </span>
+                    </td>
+                    <td>
+                        {{ usuario.comunidad.nombre }}
+                    </td>
+                    <td (click)="cambiarEstadoUsuario(usuario)">
+                        <span class="badge"
+                            [ngClass]="{'badge-active': usuario.activo, 'badge-inactive': !usuario.activo}">
+                            {{ usuario.activo ? 'Activo' : 'Inactivo' }}
+                        </span>
+                    </td>
+                    <td class="center">
+                        {{ usuario.calificacion }}
+                    </td>
+                    <td class="center">
+                        <button class="btn-accion btn-editar" (click)="abrirModalEditar(usuario)" title="Editar">
+                            <span class="material-symbols-outlined">edit</span>
+                        </button>
+                    </td>
+                    <td class="center">
+                        <button class="btn-accion btn-ver" title="Ver">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </button>
+                    </td>
+                    <td class="center">
+                        <button class="btn-accion btn-eliminar" (click)="eliminarUsuario(usuario.id)" title="Eliminar">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Crear/Editar Usuario -->
+<div class="modal" *ngIf="mostrarModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>{{ modoCrear ? 'Crear Usuario' : 'Editar Usuario' }}</h2>
+            <!-- <button class="btn-cerrar" (click)="cerrarModal()">&times;</button> -->
+        </div>
+        <div class="modal-body">
+            <form (ngSubmit)="guardarUsuario()">
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input [(ngModel)]="usuario.nombre" type="text" name="nombre" placeholder="Nombre del usuario"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label>Apellido</label>
+                    <input [(ngModel)]="usuario.apellido" type="text" name="apellido" placeholder="Apellido del usuario"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label>Correo</label>
+                    <input [(ngModel)]="usuario.correo" type="text" name="correo" placeholder="Correo del usuario"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input [(ngModel)]="usuario.contrasena" type="password" name="password" placeholder="Contraseña"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label>Codigo</label>
+                    <input [(ngModel)]="usuario.codigo" type="text" name="codigo" placeholder="Codigo" required>
+                </div>
+                <div class="form-group">
+                    <label>Rol</label>
+                    <select [(ngModel)]="usuario.rol.id" name="rolId" required>
+                        <option value="">Seleccionar rol</option>
+                        <option *ngFor="let rol of listaRoles" [value]="rol.id">{{ rol.nombre }}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Comunidad</label>
+                    <select [(ngModel)]="usuario.comunidad.id" name="comunidadId" required>
+                        <option value="">Seleccionar comunidad</option>
+                        <option *ngFor="let comunidad of listaComunidades" [value]="comunidad.id">{{ comunidad.nombre
+                            }}</option>
+                    </select>
+                </div>
+                <!-- <div class="form-group">
+                    <label>Estado</label>
+                    <select [(ngModel)]="usuario.activo" name="activo" required>
+                        <option value="true">Activo</option>
+                        <option value="false">Inactivo</option>
+                    </select>
+                </div> -->
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+                    <button type="submit" class="btn-guardar">
+                        <span class="material-symbols-outlined">save</span>
+                        {{ modoCrear ? 'Crear' : 'Guardar Cambios' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

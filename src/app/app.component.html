@@ -1,1 +1,10 @@
-<router-outlet></router-outlet>
+<div class="page-wrapper" [class.no-layout]="!mostrarLayout">
+    <app-header *ngIf="mostrarLayout" logoSrc="assets/img/logo.png" [showUserBtn]="true"></app-header>
+    <app-sidebar *ngIf="mostrarLayout"></app-sidebar>
+    <div class="contenido">
+
+        <router-outlet></router-outlet>
+
+    </div>
+    <app-footer *ngIf="mostrarLayout"></app-footer>
+</div>

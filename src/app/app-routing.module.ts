@@ -6,7 +6,7 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () =>
-      import('./pages/home/home.module').then(m => m.HomeModule)
+      import('./pages/auth/auth.module').then(m => m.AuthModule)
   },
   {
     path: 'login',
@@ -24,6 +24,12 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     loadChildren: () =>
       import('./pages/eventos/eventos.module').then(m => m.EventosModule)
+  },
+  {
+    path: 'gestion',
+    canActivate: [AuthGuard],
+    loadChildren: () =>
+      import('./pages/gestion/gestion.module').then(m => m.GestionModule)
   },
   { path: '**', redirectTo: '' }
 ];

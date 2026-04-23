@@ -1,15 +1,6 @@
-.page-wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.contenido {
+main {
   flex: 1;
-  padding: 35px;
-  background: #dcdcdc;
 }
-
 /* Grid */
 .eventos-grid {
   display: grid;

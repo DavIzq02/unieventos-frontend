@@ -1,46 +1,38 @@
-<div class="page-wrapper">
+<app-breadcrumb [items]="breadcrumb"></app-breadcrumb>
 
-    <app-header logoSrc="assets/img/logo.png" [showUserBtn]="true"></app-header>
-    <app-sidebar></app-sidebar>
-    <app-breadcrumb [items]="breadcrumb"></app-breadcrumb>
 
-    <div class="contenido">
-        <section class="panel-principal">
+<section class="panel-principal">
 
-            <div class="panel-titulo">
-                <h2>Gestionar Eventos</h2>
-            </div>
-
-            <div class="eventos-grid">
-
-                <!-- Tarjetas de eventos -->
-                <div class="evento" *ngFor="let evento of misEventos">
-                    <div class="img-box" [class.activo]="evento.activo">
-                        <img [src]="evento.img" [alt]="evento.nombre"
-                            onerror="this.src='https://cdn-icons-png.flaticon.com/512/1055/1055687.png'">
-                        <span class="badge-activo" *ngIf="evento.activo">Activo</span>
-                    </div>
-                    <p>{{ evento.nombre }}</p>
-                    <div class="acciones">
-                        <button class="btn iniciar" (click)="iniciarEvento()">Iniciar</button>
-                        <button class="btn ver" (click)="abrirModal(evento)">Ver</button>
-                    </div>
-                </div>
-
-                <!-- Agregar evento -->
-                <div class="evento agregar-evento" (click)="irCrearEvento()">
-                    <div class="img-box agregar-box">
-                        <span class="mas">+</span>
-                    </div>
-                    <p>Agregar Evento</p>
-                </div>
-
-            </div>
-        </section>
+    <div class="panel-titulo">
+        <h2>Gestionar Eventos</h2>
     </div>
 
-    <app-footer></app-footer>
-</div>
+    <div class="eventos-grid">
+
+        <!-- Tarjetas de eventos -->
+        <div class="evento" *ngFor="let evento of misEventos">
+            <div class="img-box" [class.activo]="evento.activo">
+                <img [src]="evento.img" [alt]="evento.nombre"
+                    onerror="this.src='https://cdn-icons-png.flaticon.com/512/1055/1055687.png'">
+                <span class="badge-activo" *ngIf="evento.activo">Activo</span>
+            </div>
+            <p>{{ evento.nombre }}</p>
+            <div class="acciones">
+                <button class="btn iniciar" (click)="iniciarEvento()">Iniciar</button>
+                <button class="btn ver" (click)="abrirModal(evento)">Ver</button>
+            </div>
+        </div>
+
+        <!-- Agregar evento -->
+        <div class="evento agregar-evento" (click)="irCrearEvento()">
+            <div class="img-box agregar-box">
+                <span class="mas">+</span>
+            </div>
+            <p>Agregar Evento</p>
+        </div>
+
+    </div>
+</section>
 
 <!-- Modal overlay -->
 <div class="modal-overlay" [class.hidden]="!modalAbierto" (click)="cerrarModal()">
