@@ -5,6 +5,8 @@ import { EventosService } from '../../../core/services/eventos.service';
 import { BreadcrumbItem } from '../../../shared/models/breadcrumb-item.model';
 import { MyEvento } from 'src/app/shared/models/my-evento.model';
 import Swal from 'sweetalert2';
+import { AuthService } from '../../auth/auth.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-crear-evento',
@@ -19,49 +21,74 @@ export class CrearEventoComponent implements OnInit {
     { label: 'Crear Evento' }
   ];
 
-  dirigidoAOptions = ['Estudiantes', 'Docentes', 'Egresados', 'Administrativos'];
-  tipoEventoOptions = ['Académico', 'Cultural', 'Deportivo', 'Social', 'Tecnológico', 'Bienestar'];
-
+  listaComunidad: any = [];
+  listaComunidadesSeleccionadas: any[] = [];
+  listaTipoEventos: any[] = [];
+  semaforo: string = "";
   form!: FormGroup;
-  imagenPreview: string | null = null;
+  imagenPreview: any;
+  nombreImagen: string = '';
+  nuevoEvento: any = {
+    nombre: '',
+    descripcion: '',
+    fechaDeFinalizacion: '',
+    fechaDeApertura: '',
+    tipoDeEvento: { id: '' },
+    idUsuarioCreador: { id: '' },
+    horarios: [{ horaDeInicio: '', horaDeFinalizacion: '', evento: { id: '' } }]
+  };
+  multiselectComunidades = {
+    lazyLoading: true,
+    text: 'Seleccionar',
+    selectAllText: 'Seleccionar todos',
+    unSelectAllText: 'Deseleccionar todo',
+    noDataLabel: 'No se encontraron resultados',
+    classes: 'multiselect-unieventos',
+    labelKey: 'nombre',
+    primaryKey: 'id',
+    enableSearchFilter: true,
+    badgeShowLimit: 1,
+    searchBy: ['nombre'],
+    searchPlaceholderText: 'Buscar',
+  }
+
+
 
   constructor(
     private fb: FormBuilder,
     private eventosService: EventosService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) { }
 
   ngOnInit(): void {
-    this.form = this.fb.group({
-      nombre: ['', Validators.required],
-      fechaFin: ['', Validators.required],
-      descripcion: [''],
-      portada: [''],
-      fechaApertura: ['', Validators.required],
-      dirigidoA: ['', Validators.required],
-      tipoEvento: ['', Validators.required],
-      horarios: this.fb.array([this.crearHorario()])
+    this.getComunidades();
+    this.getTiposEventos();
+  }
+
+  getComunidades(): void {
+    this.eventosService.getComunidades().subscribe((resp: any) => {
+      if (resp.codigo == 200) {
+        this.listaComunidad = resp.listaRespuesta;
+      }
     });
   }
 
-  get horarios(): FormArray {
-    return this.form.get('horarios') as FormArray;
-  }
-
-  crearHorario(): FormGroup {
-    return this.fb.group({
-      inicio: ['', Validators.required],
-      fin: ['', Validators.required]
+  getTiposEventos(): void {
+    this.eventosService.getTipoEventos().subscribe((resp: any) => {
+      if (resp.codigo == 200) {
+        this.listaTipoEventos = resp.listaRespuesta;
+      }
     });
   }
 
   agregarHorario(): void {
-    this.horarios.push(this.crearHorario());
+    this.nuevoEvento.horarios.push({ inicio: '', fin: '' });
   }
 
   eliminarHorario(index: number): void {
-    if (this.horarios.length > 1) {
-      this.horarios.removeAt(index);
+    if (this.nuevoEvento.horarios.length > 1) {
+      this.nuevoEvento.horarios.splice(index, 1);
     } else {
       Swal.fire({
         title: 'Atención',
@@ -72,48 +99,126 @@ export class CrearEventoComponent implements OnInit {
     }
   }
 
-  onImagenChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
+  onImagenChange(event: any) {
+    const file = event.target.files[0];
+
+    if (file) {
+      this.imagenPreview = file;
+      this.nuevoEvento.nombreImagen = file.name;
       const reader = new FileReader();
-      reader.onload = (e) => {
-        this.imagenPreview = e.target?.result as string;
+      reader.onload = () => {
+        this.nombreImagen = reader.result as string;
       };
-      reader.readAsDataURL(input.files[0]);
+      reader.readAsDataURL(file);
     }
+
   }
 
-  onSubmit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
+  async crearEvento(): Promise<void> {
+
+    try {
+      this.nuevoEvento.idUsuarioCreador.id = this.authService.obtenerUsuario().id;
+      this.nuevoEvento.tipoDeEvento.id = Number(this.nuevoEvento.tipoDeEvento.id);
+      this.nuevoEvento.fechaDeFinalizacion = new Date(this.nuevoEvento.fechaDeFinalizacion);
+      this.nuevoEvento.fechaDeApertura = new Date(this.nuevoEvento.fechaDeApertura);
+
+      const eventoCreado: any = await firstValueFrom(this.eventosService.crearEvento(this.nuevoEvento));
+      if (eventoCreado.codigo != 201) {
+        Swal.fire({
+          title: 'Error al crear el evento',
+          text: eventoCreado.mensaje,
+          icon: 'error',
+          confirmButtonColor: '#1f5fa8'
+        });
+        return;
+      }
+
+      this.nuevoEvento.id = eventoCreado.data.id;
+
+      const eventoComunidadCreado: any = await firstValueFrom(this.eventosService.crearEventoComunidad(this.listaComunidadesSeleccionadas, eventoCreado.data.id));
+      if (eventoComunidadCreado.codigo != 201) {
+        Swal.fire({
+          title: 'Error al añadir el evento a las comunidades',
+          text: eventoComunidadCreado.mensaje,
+          icon: 'error',
+          confirmButtonColor: '#1f5fa8'
+        });
+        return;
+      }
+      this.nuevoEvento.horarios.forEach((horario: any) => {
+        horario.evento.id = this.nuevoEvento.id;
+      });
+
+      const listaJornadasCreadas: any = await firstValueFrom(this.eventosService.crearJornadasEvento(this.nuevoEvento.horarios));
+      if (listaJornadasCreadas.codigo != 201) {
+        Swal.fire({
+          title: 'Error al crear las jornadas del evento',
+          text: listaJornadasCreadas.mensaje,
+          icon: 'error',
+          confirmButtonColor: '#1f5fa8'
+        });
+        return;
+      }
+
+      const cargarFotoEvento: any = await firstValueFrom(this.eventosService.updatePortadaEvento(this.nuevoEvento.id, this.imagenPreview));
+      if (cargarFotoEvento.codigo != 200) {
+        Swal.fire({
+          title: 'Error al cargar la foto del evento',
+          text: cargarFotoEvento.mensaje,
+          icon: 'error',
+          confirmButtonColor: '#1f5fa8'
+        });
+        return;
+      }
+
+      Swal.fire({
+        title: '¡Evento creado!',
+        text: `${this.nuevoEvento.nombre} fue creado exitosamente`,
+        icon: 'success',
+        confirmButtonColor: '#1f5fa8'
+      }).then(() => {
+        this.router.navigate(['/eventos/mis-eventos']);
+      });
+
+    } catch (error: any) {
+      Swal.fire({
+        title: 'Error al crear el evento',
+        text: error.message,
+        icon: 'error',
+        confirmButtonColor: '#1f5fa8'
+      });
       return;
     }
+  }
+  async onSubmit(): Promise<void> {
 
-    const v = this.form.value;
+    // if (this.nuevoEvento.id != null) {
+    //   Swal.fire({
+    //     title: 'Atención',
+    //     text: 'El evento ya fué creado',
+    //     icon: 'warning',
+    //     confirmButtonColor: '#1f5fa8'
+    //   });
+    //   return;
+    // }
 
-    const nuevoEvento: MyEvento = {
-      id: Date.now().toString(),
-      nombre: v.nombre,
-      descripcion: v.descripcion,
-      fechaApertura: v.fechaApertura,
-      fechaFin: v.fechaFin,
-      dirigidoA: v.dirigidoA,
-      tipo: v.tipoEvento,
-      horarios: v.horarios,
-      preinscritos: [],
-      img: this.imagenPreview || 'https://cdn-icons-png.flaticon.com/512/1055/1055687.png',
-      activo: false
-    };
+    await this.crearEvento()
 
-    this.eventosService.agregarEvento(nuevoEvento);
+  }
 
-    Swal.fire({
-      title: '¡Evento creado!',
-      text: `${nuevoEvento.nombre} fue creado exitosamente`,
-      icon: 'success',
-      confirmButtonColor: '#1f5fa8'
-    }).then(() => {
-      this.router.navigate(['/eventos/mis-eventos']);
-    });
+  onSelectAll(items: any) {
+    console.log(items);
+  }
+
+  onDeSelectAll(items: any) {
+    console.log(items);
+  }
+
+  onSelect(item: any) {
+    console.log(item);
+  }
+
+  onDeSelect(item: any) {
+    console.log(item);
   }
 }

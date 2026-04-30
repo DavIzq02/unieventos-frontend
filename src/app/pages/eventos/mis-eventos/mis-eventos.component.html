@@ -7,14 +7,28 @@
         <h2>Gestionar Eventos</h2>
     </div>
 
-    <div class="eventos-grid">
+    <div class="search">
+        <input type="text" placeholder="Buscar general..." [(ngModel)]="textoBusqueda" (input)="filtrarBusqueda()">
+        <select [(ngModel)]="categoriaSeleccionada" (change)="filtrar()">
+            <option value="todos">Todas las categorías</option>
+            <option *ngFor="let tipo of listaTipoEventos" [value]="tipo.nombre">
+                {{ tipo.nombre }}
+            </option>
+        </select>
+    </div>
 
+    <div class="eventos-grid">
         <!-- Tarjetas de eventos -->
-        <div class="evento" *ngFor="let evento of misEventos">
-            <div class="img-box" [class.activo]="evento.activo">
-                <img [src]="evento.img" [alt]="evento.nombre"
+        <div class="evento" *ngFor="let evento of listaEventos">
+            <div class="img-box" [class.activo]="evento.urlImagenPortada">
+                <img [src]="evento.urlImagenPortada" [alt]="evento.nombre"
                     onerror="this.src='https://cdn-icons-png.flaticon.com/512/1055/1055687.png'">
-                <span class="badge-activo" *ngIf="evento.activo">Activo</span>
+                <span *ngIf="evento.activo && !evento.cerrado" style="background-color: rgb(39, 140, 39);"
+                    class="badge-activo">Activo</span>
+                <span *ngIf="!evento.activo && !evento.cerrado" style="background-color: rgb(59, 108, 206);"
+                    class="badge-activo">Proximamente</span>
+                <span *ngIf="evento.cerrado" style="background-color: rgb(249, 77, 77);"
+                    class="badge-activo">Cerrado</span>
             </div>
             <p>{{ evento.nombre }}</p>
             <div class="acciones">
@@ -52,7 +66,7 @@
 
                 <!-- Imagen -->
                 <div class="modal-img" [class.hidden]="mostrarQR">
-                    <img [src]="eventoSeleccionado.img" [alt]="eventoSeleccionado.nombre"
+                    <img [src]="eventoSeleccionado.urlImagenPortada" [alt]="eventoSeleccionado.nombre"
                         onerror="this.src='https://cdn-icons-png.flaticon.com/512/1055/1055687.png'">
                 </div>
 
@@ -76,17 +90,17 @@
                         <div class="modal-section">
                             <h4>Horarios</h4>
                             <ul class="modal-list">
-                                <li *ngFor="let h of eventoSeleccionado.horarios">
+                                <!-- <li *ngFor="let h of eventoSeleccionado.horarios">
                                     {{ h.inicio }} — {{ h.fin }}
-                                </li>
+                                </li> -->
                             </ul>
                         </div>
                         <div class="modal-section">
                             <h4>Preinscritos</h4>
                             <ul class="modal-list">
-                                <li *ngFor="let p of eventoSeleccionado.preinscritos">
+                                <!-- <li *ngFor="let p of eventoSeleccionado.preinscritos">
                                     {{ p }}
-                                </li>
+                                </li> -->
                             </ul>
                         </div>
                     </div>

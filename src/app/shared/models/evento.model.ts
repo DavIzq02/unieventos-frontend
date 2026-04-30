@@ -1,6 +1,11 @@
 export interface Evento {
+    id: number;
     nombre: string;
-    categoria: string;
+    nombreTipoEvento: string;
     descripcion: string;
-    img: string;
+    urlImagenPortada: string;
+    fechaDeApertura: Date;
+    fechaDeFinalizacion: Date;
+    activo?: boolean;
+    cerrado?: boolean;
 }

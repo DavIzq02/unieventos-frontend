@@ -20,6 +20,7 @@ export class AuthService {
   private usuarioResource = RutaApiService.getPath() + this.raiz + 'usuario/';
   private tipoEventoResource = RutaApiService.getPath() + this.raiz + 'tipos-eventos/';
   private comunidadResource = RutaApiService.getPath() + this.raiz + 'comunidad/';
+  private interesUsuarioResource = RutaApiService.getPath() + this.raiz + 'interes-usuario/';
 
   constructor(private http: HttpClient) { }
 
@@ -65,6 +66,13 @@ export class AuthService {
     return this.http.post<any>(rutaCrearUsuario, formData)
       .pipe(catchError(err => throwError(() => err)));
   }
+
+  crearInteresUsuario(listaEventoInteres: any): Observable<any> {
+    const rutaInteres = this.interesUsuarioResource + 'create';
+    return this.http.post<any>(rutaInteres, listaEventoInteres)
+      .pipe(catchError(err => throwError(() => err)));
+  }
+
 
   guardarUsuario(usuario: any) {
     localStorage.setItem('usuario', JSON.stringify(usuario));

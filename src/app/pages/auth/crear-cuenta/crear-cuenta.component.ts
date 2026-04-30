@@ -184,6 +184,21 @@ export class CrearCuentaComponent {
       }
       const respuesta: any = await firstValueFrom(this.authService.crearUsuario(nuevoUsuario, this.imagenSeleccionada));
       if (respuesta.codigo == 200) {
+        const listaEventoInteres: {
+          tipoDeEvento: any;
+          usuario: any;
+        }[] = []
+
+        const idUsuario = respuesta.data.id;
+
+        for (const interes of this.DataNuevoUsuario.listaEventosInteres) {
+          listaEventoInteres.push({
+            tipoDeEvento: interes,
+            usuario: idUsuario
+          })
+        }
+        const respIntereses: any = await firstValueFrom(this.authService.crearInteresUsuario(listaEventoInteres))
+        if (respIntereses.codigo != 201) return;
         Swal.fire({
           title: "Bienvenido " + this.DataNuevoUsuario.nombre,
           text: "Ya puedes disfrutar de los eventos disponibles",

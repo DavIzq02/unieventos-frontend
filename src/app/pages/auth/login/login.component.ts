@@ -82,13 +82,13 @@ export class LoginComponent {
               this.router.navigate(['/login/crearcuenta']);
             });
 
-            // const nombreUsuario = email.split('@')[0];
+            const nombreUsuario = email.split('@')[0];
             // const correo = email;
             // const contrasena = password;
-            // localStorage.setItem("nombreUsuario", nombreUsuario);
+            localStorage.setItem("nombreUsuario", nombreUsuario);
             // localStorage.setItem("correo", correo);
             // localStorage.setItem("contrasena", contrasena);
-            // this.router.navigate(['/login/crearcuenta']);
+            this.router.navigate(['/login/crearcuenta']);
             return;
           }
           Swal.fire({

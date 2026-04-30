@@ -15,6 +15,7 @@
             *ngIf="usuario.urlFoto != 'not defined'">
         <span class="material-symbols-outlined" *ngIf="usuario.urlFoto == 'not defined'">account_circle</span>
     </div>
+    <a routerLink="/dashboard" (click)="close()">Inicio</a>
     <a routerLink="/gestion/mi-perfil" (click)="close()">Mi perfil</a>
     <a *ngIf="usuario.rol.id == 1" routerLink="/gestion/usuarios" (click)="close()">Gestionar Cuentas</a>
     <a routerLink="/eventos/mis-eventos" (click)="close()">Ver mis eventos</a>

@@ -1,49 +1,86 @@
 <app-breadcrumb [items]="breadcrumb"></app-breadcrumb>
 
-
-
 <div class="container" *ngIf="!eventoDetalle">
 
+    <!--BUSCADOR Y FILTROS-->
     <div class="search">
-        <input type="text" placeholder="Buscar general..." [(ngModel)]="textoBusqueda" (input)="filtrar()">
+        <input type="text" placeholder="Buscar general..." [(ngModel)]="textoBusqueda" (input)="filtrarBusqueda()">
         <select [(ngModel)]="categoriaSeleccionada" (change)="filtrar()">
-            <option *ngFor="let cat of categorias" [value]="cat">
-                {{ cat === 'todos' ? 'Todas las categorías' : cat }}
+            <option value="todos">Todas las categorías</option>
+            <option *ngFor="let tipo of listaTipoEventos" [value]="tipo.nombre">
+                {{ tipo.nombre }}
             </option>
         </select>
     </div>
 
+    <!--EVENTOS ACTUALES-->
     <section>
         <h2>Eventos actuales</h2>
-        <div class="eventos" *ngIf="eventosActuales.length > 0">
-            <div class="card" *ngFor="let evento of eventosActuales" (click)="verDetalle(evento)">
-                <img [src]="evento.img" [alt]="evento.nombre">
+        <div class="eventos" *ngIf="listaEventosActuales.length > 0">
+            <div class="card" *ngFor="let evento of listaEventosActuales" (click)="verDetalle(evento)">
+                <img [src]="evento.urlImagenPortada" [alt]="evento.nombre">
                 <p>{{ evento.nombre }}</p>
             </div>
         </div>
-        <p class="mensaje-vacio" *ngIf="eventosActuales.length === 0">
+        <p class="mensaje-vacio" *ngIf="listaEventosActuales.length === 0">
             No hay eventos registrados
         </p>
     </section>
 
+    <!--PROXIMOS EVENTOS-->
     <section>
         <h2>Próximos eventos</h2>
-        <div class="eventos" *ngIf="proximosEventos.length > 0">
-            <div class="card" *ngFor="let evento of proximosEventos" (click)="verDetalle(evento)">
-                <img [src]="evento.img" [alt]="evento.nombre">
+        <div class="eventos" *ngIf="listaEventosProximos.length > 0">
+            <div class="card" *ngFor="let evento of listaEventosProximos" (click)="verDetalle(evento)">
+                <img [src]="evento.urlImagenPortada" [alt]="evento.nombre">
                 <p>{{ evento.nombre }}</p>
             </div>
         </div>
-        <p class="mensaje-vacio" *ngIf="proximosEventos.length === 0">
+        <p class="mensaje-vacio" *ngIf="listaEventosProximos.length === 0">
             No hay eventos registrados
         </p>
     </section>
 
+    <!--EVENTOS DE INTERES-->
+    <section>
+        <h2>Eventos que podrían interesarte</h2>
+        <div class="eventos" *ngIf="listaEventosInteres.length > 0">
+            <div class="card" *ngFor="let evento of listaEventosInteres" (click)="verDetalle(evento)">
+                <img [src]="evento.urlImagenPortada" [alt]="evento.nombre">
+                <p>{{ evento.nombre }}</p>
+            </div>
+        </div>
+        <p class="mensaje-vacio" *ngIf="listaEventosInteres.length === 0">
+            No hay eventos registrados
+        </p>
+    </section>
+
+    <!--EVENTOS DE LA COMUNIDAD-->
+    <section>
+        <h2>Eventos de tu comunidad</h2>
+        <div class="eventos" *ngIf="listaEventosComunidad.length > 0">
+            <div class="card" *ngFor="let evento of listaEventosComunidad" (click)="verDetalle(evento)">
+                <img [src]="evento.urlImagenPortada" [alt]="evento.nombre">
+                <p>{{ evento.nombre }}</p>
+            </div>
+        </div>
+        <p class="mensaje-vacio" *ngIf="listaEventosComunidad.length === 0">
+            No hay eventos registrados
+        </p>
+    </section>
+
+    <!--EVENTOS ASISTIDOS-->
     <section>
         <h2>Eventos Asistidos</h2>
-        <div class="mensaje">
+        <div class="mensaje" *ngIf="listaEventosAsistidos.length === 0">
             <p>¡Quédate atento a los eventos!</p>
             <p>Hasta el momento no has asistido a ningún evento</p>
+        </div>
+        <div class="eventos" *ngIf="listaEventosAsistidos.length > 0">
+            <div class="card" *ngFor="let evento of listaEventosAsistidos" (click)="verDetalle(evento)">
+                <img [src]="evento.urlImagenPortada" [alt]="evento.nombre">
+                <p>{{ evento.nombre }}</p>
+            </div>
         </div>
     </section>
 
@@ -51,10 +88,10 @@
 
 
 
-<!-- Detalle evento -->
+<!-- DETALLE EVENTO -->
 <div class="detalle" *ngIf="eventoDetalle">
     <h2>{{ eventoDetalle.nombre }}</h2>
-    <img [src]="eventoDetalle.img" [alt]="eventoDetalle.nombre">
+    <img [src]="eventoDetalle.urlImagenPortada" [alt]="eventoDetalle.nombre">
     <p>{{ eventoDetalle.descripcion }}</p>
     <button (click)="volver()">Volver</button>
 </div>

@@ -4,6 +4,7 @@ import { MyEvento } from 'src/app/shared/models/my-evento.model';
 import { EventosService } from '../../../core/services/eventos.service';
 import { BreadcrumbItem } from '../../../shared/models/breadcrumb-item.model';
 import Swal from 'sweetalert2';
+import { Evento } from 'src/app/shared/models/evento.model';
 
 @Component({
   selector: 'app-mis-eventos',
@@ -17,10 +18,14 @@ export class MisEventosComponent implements OnInit {
     { label: 'Mis Eventos' }
   ];
 
-  misEventos: MyEvento[] = [];
-  eventoSeleccionado: MyEvento | null = null;
+  listaEventos: Evento[] = [];
+  listaEventosOriginal: Evento[] = [];
+  eventoSeleccionado: Evento | null = null;
   modalAbierto = false;
   mostrarQR = false;
+  categoriaSeleccionada: any;
+  textoBusqueda: any;
+  listaTipoEventos: any[] = [];
 
   constructor(
     private eventosService: EventosService,
@@ -29,13 +34,53 @@ export class MisEventosComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarEventos();
+    this.cargarTipoEventos();
+  }
+
+  cargarTipoEventos() {
+    this.listaTipoEventos = [];
+    this.eventosService.getTipoEventos().subscribe((res: any) => {
+      this.listaTipoEventos = res.listaRespuesta;
+    });
   }
 
   cargarEventos(): void {
-    this.misEventos = this.eventosService.getMisEventos();
+    this.eventosService.getEventosByUsuario().subscribe((res: any) => {
+      this.listaEventos = res.listaRespuesta;
+      for (const evento of this.listaEventos) {
+        evento.activo = new Date(evento.fechaDeApertura) <= new Date() && new Date(evento.fechaDeFinalizacion) >= new Date();
+        evento.cerrado = new Date(evento.fechaDeFinalizacion) < new Date();
+      }
+      this.listaEventosOriginal = this.listaEventos;
+    });
   }
 
-  abrirModal(evento: MyEvento): void {
+  restablecerListas() {
+    this.listaEventos = this.listaEventosOriginal;
+  }
+
+  filtrar() {
+    if (this.categoriaSeleccionada == "todos") {
+      this.restablecerListas()
+      return;
+    }
+    this.listaEventos = this.listaEventosOriginal.filter((evento: Evento) => {
+      return evento.nombreTipoEvento.toLowerCase().includes(this.categoriaSeleccionada.toLowerCase());
+    });
+  }
+
+  filtrarBusqueda() {
+    if (this.textoBusqueda == "") {
+      this.restablecerListas()
+      return;
+    }
+
+    this.listaEventos = this.listaEventosOriginal.filter((evento: Evento) => {
+      return evento.nombre.toLowerCase().includes(this.textoBusqueda.toLowerCase());
+    });
+  }
+
+  abrirModal(evento: Evento): void {
     this.eventoSeleccionado = evento;
     this.modalAbierto = true;
     this.mostrarQR = false;
@@ -53,7 +98,7 @@ export class MisEventosComponent implements OnInit {
 
   iniciarEvento(): void {
     if (!this.eventoSeleccionado) return;
-    this.eventosService.iniciarEvento(this.eventoSeleccionado.id);
+    //this.eventosService.iniciarEvento(this.eventoSeleccionado.id);
     this.cerrarModal();
     Swal.fire({
       title: '¡Evento iniciado!',
@@ -77,7 +122,7 @@ export class MisEventosComponent implements OnInit {
       cancelButtonText: 'Cancelar'
     }).then(result => {
       if (result.isConfirmed && this.eventoSeleccionado) {
-        this.eventosService.eliminarEvento(this.eventoSeleccionado.id);
+        //this.eventosService.eliminarEvento(this.eventoSeleccionado.id);
         this.cerrarModal();
         this.cargarEventos();
         Swal.fire({

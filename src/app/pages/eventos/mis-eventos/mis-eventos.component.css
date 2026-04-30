@@ -297,6 +297,40 @@ main {
   color: #2f80c3;
 }
 
+.search {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
+  padding: 0 20px;
+}
+
+.search input,
+.search select {
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: "Outfit", sans-serif;
+  font-size: 14px;
+  color: #444;
+  outline: none;
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 300px;
+  background-color: white;
+}
+
+.search input:focus,
+.search select:focus {
+  border-color: #2f80c3;
+  box-shadow: 0 0 0 3px rgba(47, 128, 195, 0.2);
+}
+
+.search select {
+  cursor: pointer;
+}
 /* Responsive */
 @media (max-width: 650px) {
   .modal-inner {
