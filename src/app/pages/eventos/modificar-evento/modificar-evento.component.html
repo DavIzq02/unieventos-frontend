@@ -1,0 +1,126 @@
+<app-breadcrumb [items]="breadcrumb"></app-breadcrumb>
+
+<section class="panel-principal">
+
+    <div class="panel-titulo">
+        <h2>Modificar Evento</h2>
+    </div>
+
+    <form class="formulario-evento">
+        <div class="layout-container">
+
+            <!-- Panel Izquierdo: Imagen -->
+            <div class="panel-imagen">
+                <div class="form-group">
+                    <label>Portada del Evento</label>
+                    <div class="upload-area-grande" (click)="fileInput.click()">
+                        <img *ngIf="imagenPreview" [src]="nombreImagen" class="preview-img-grande">
+                        <div *ngIf="!imagenPreview" class="upload-placeholder">
+                            <span class="material-symbols-outlined">add_a_photo</span>
+                            <p>Subir nueva portada</p>
+                        </div>
+                    </div>
+                    <input #fileInput type="file" hidden accept="image/*" (change)="onImagenChange($event)">
+                    <p class="ayuda-texto">Haz clic en la imagen para cambiarla</p>
+                </div>
+            </div>
+
+            <!-- Panel Derecho: Información -->
+            <div class="panel-info">
+                <div class="form-grid">
+                    <!-- Columna info 1 -->
+                    <div class="form-column">
+                        <div class="form-group">
+                            <label>Nombre del Evento</label>
+                            <input type="text" [(ngModel)]="eventoSeleccionado.nombre" name="nombre" #nombre="ngModel">
+                            <span class="error" *ngIf="nombre.invalid && nombre.touched">
+                                El nombre del evento es requerido
+                            </span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Fecha de Apertura</label>
+                            <input type="date" [(ngModel)]="eventoSeleccionado.fechaDeApertura" name="fechaDeApertura"
+                                #fechaDeApertura="ngModel">
+                            <span class="error" *ngIf="fechaDeApertura.invalid && fechaDeApertura.touched">
+                                La fecha de apertura es requerida
+                            </span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Fecha de Finalización</label>
+                            <input type="date" [(ngModel)]="eventoSeleccionado.fechaDeFinalizacion"
+                                name="fechaDeFinalizacion" #fechaDeFinalizacion="ngModel">
+                            <span class="error" *ngIf="fechaDeFinalizacion.invalid && fechaDeFinalizacion.touched">
+                                La fecha de finalización es requerida
+                            </span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tipo de Evento</label>
+                            <select class="form-select" [(ngModel)]="eventoSeleccionado.tipoDeEvento.id"
+                                name="tipoDeEvento" #tipoDeEvento="ngModel">
+                                <option value="" disabled>Seleccione una opción</option>
+                                <option *ngFor="let tipo of listaTipoEventos" [value]="tipo.id">{{ tipo.nombre }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Columna info 2 -->
+                    <div class="form-column">
+                        <div class="form-group">
+                            <label>Dirigido a</label>
+                            <angular2-multiselect name="listaComunidades" [data]="listaComunidad"
+                                [(ngModel)]="listaComunidadesSeleccionadas" [settings]="multiselectComunidades"
+                                (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)"
+                                (onSelect)="onSelect($event)" (onDeSelect)="onDeSelect($event)">
+                            </angular2-multiselect>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Descripción del evento</label>
+                            <textarea rows="6" [(ngModel)]="eventoSeleccionado.descripcion" name="descripcion"
+                                #descripcion="ngModel"></textarea>
+                            <span class="error" *ngIf="descripcion.invalid && descripcion.touched">
+                                La descripción del evento es requerida
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Horarios (Ancho completo en la sección de info) -->
+                <div class="form-group mt-20">
+                    <label>Horarios Disponibles</label>
+                    <div class="horarios-container">
+                        <div *ngFor="let horario of eventoSeleccionado.horarios; let i = index" class="schedule-row">
+                            <div class="time-field">
+                                <label>Inicio</label>
+                                <input type="time" [(ngModel)]="horario.horaDeInicio" name="horaDeInicio-{{i}}"
+                                    #horaDeInicio="ngModel">
+                            </div>
+                            <div class="time-field">
+                                <label>Fin</label>
+                                <input type="time" [(ngModel)]="horario.horaDeFinalizacion"
+                                    name="horaDeFinalizacion-{{i}}" #horaDeFinalizacion="ngModel">
+                            </div>
+                            <button type="button" class="btn-remove" (click)="eliminarHorario(i)">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-secondary" (click)="agregarHorario()">
+                        <span class="material-symbols-outlined">add_circle</span> Agregar Horario
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn-cancelar" (click)="irAMisEventos()">Cancelar</button>
+            <button type="button" class="btn-guardar" (click)="onSubmit()">Modificar</button>
+
+        </div>
+
+    </form>
+</section>

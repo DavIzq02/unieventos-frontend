@@ -15,8 +15,25 @@ main {
   width: 170px;
   text-align: center;
   cursor: pointer;
+  overflow: hidden;
+}
+/* Estado sin imagen */
+.img-box.sin-imagen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+.placeholder {
+  text-align: center;
+  color: #999;
+}
+
+.placeholder img {
+  width: 40px;
+  opacity: 0.4;
+  margin-bottom: 5px;
+}
 .img-box {
   width: 140px;
   height: 95px;
@@ -38,7 +55,7 @@ main {
 .img-box img {
   max-width: 100%;
   max-height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .badge-activo {
@@ -56,6 +73,24 @@ main {
   font-size: 15px;
   color: #222;
   margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 5px;
+}
+
+/* Titles for the new sections */
+.eventos-seccion {
+  margin-bottom: 20px;
+}
+
+.seccion-titulo {
+  font-size: 22px;
+  color: #2f80c3;
+  margin-left: 25px;
+  margin-bottom: 0px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 5px;
 }
 
 /* Agregar */
@@ -124,7 +159,7 @@ main {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 90%;
-  max-width: 700px;
+  max-width: 900px;
   background: white;
   border-radius: 25px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -210,9 +245,13 @@ main {
 }
 
 .modal-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
   gap: 15px;
+}
+
+.modal-section {
+  flex: 1;
+  min-width: 0;
 }
 
 .modal-section h4 {
@@ -226,9 +265,8 @@ main {
 .modal-list {
   list-style: none;
   padding: 0;
-  font-size: 13px;
-  color: #555;
-  max-height: 80px;
+  color: black;
+  max-height: 250px;
   overflow-y: auto;
 }
 
@@ -331,6 +369,52 @@ main {
 .search select {
   cursor: pointer;
 }
+
+.jornada-list li {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  background-color: #f9f9f9;
+  border-left: 3px solid transparent;
+}
+
+.jornada-list li:hover {
+  background-color: #eef5fb;
+  border-left: 3px solid #71b8f2;
+}
+
+.jornada-list li.selected {
+  background-color: #e4f0f9;
+  border-left: 3px solid #2f80c3;
+  color: #1f5fa8;
+  font-weight: 500;
+}
+
+.person-list li {
+  font-size: 15px;
+  color: #444;
+  padding: 10px 0;
+}
+
+.person-list .empty-msg {
+  color: #999;
+  font-style: italic;
+  border-left: none;
+}
+
+.btn-excel {
+  background-color: #21b573;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-excel:hover {
+  background-color: #1a965f;
+}
+
 /* Responsive */
 @media (max-width: 650px) {
   .modal-inner {
@@ -342,7 +426,7 @@ main {
     height: 150px;
   }
   .modal-grid {
-    grid-template-columns: 1fr;
+    flex-direction: column;
   }
   .contenido {
     padding: 20px;

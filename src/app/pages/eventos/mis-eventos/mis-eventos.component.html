@@ -17,34 +17,113 @@
         </select>
     </div>
 
-    <div class="eventos-grid">
-        <!-- Tarjetas de eventos -->
-        <div class="evento" *ngFor="let evento of listaEventos">
-            <div class="img-box" [class.activo]="evento.urlImagenPortada">
-                <img [src]="evento.urlImagenPortada" [alt]="evento.nombre"
-                    onerror="this.src='https://cdn-icons-png.flaticon.com/512/1055/1055687.png'">
-                <span *ngIf="evento.activo && !evento.cerrado" style="background-color: rgb(39, 140, 39);"
-                    class="badge-activo">Activo</span>
-                <span *ngIf="!evento.activo && !evento.cerrado" style="background-color: rgb(59, 108, 206);"
-                    class="badge-activo">Proximamente</span>
-                <span *ngIf="evento.cerrado" style="background-color: rgb(249, 77, 77);"
-                    class="badge-activo">Cerrado</span>
+    <div class="eventos-seccion" *ngIf="eventosActivos.length > 0 || listaEventos.length === 0">
+        <h3 class="seccion-titulo" *ngIf="listaEventos.length > 0">Activos</h3>
+        <div class="eventos-grid">
+            <!-- Agregar evento -->
+            <div class="evento agregar-evento" (click)="irCrearEvento()">
+                <div class="img-box agregar-box">
+                    <span class="mas">+</span>
+                </div>
+                <p>Agregar Evento</p>
             </div>
-            <p>{{ evento.nombre }}</p>
-            <div class="acciones">
-                <button class="btn iniciar" (click)="iniciarEvento()">Iniciar</button>
-                <button class="btn ver" (click)="abrirModal(evento)">Ver</button>
+
+            <!-- Tarjetas de eventos activos -->
+            <div class="evento" *ngFor="let evento of eventosActivos">
+                <div (click)="abrirModal(evento)" class="img-box" [class.sin-imagen]="!evento.urlImagenPortada">
+
+                    <ng-container *ngIf="evento.urlImagenPortada; else sinImagen">
+                        <img [src]="evento.urlImagenPortada" [alt]="evento.nombre"
+                            (error)="evento.urlImagenPortada = ''">
+                    </ng-container>
+
+                    <ng-template #sinImagen>
+                        <div class="placeholder">
+                            <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="Sin imagen">
+                            <span>Sin imagen</span>
+                        </div>
+                    </ng-template>
+
+                    <span style="background-color: rgb(39, 140, 39);" class="badge-activo">
+                        Activo
+                    </span>
+                </div>
+
+                <p [title]="evento.nombre">{{ evento.nombre }}</p>
+
+                <!-- <div class="acciones">
+                    <button class="btn iniciar" (click)="iniciarEvento()">Iniciar</button>
+                    <button class="btn ver" (click)="abrirModal(evento)">Ver</button>
+                </div> -->
             </div>
         </div>
+    </div>
 
-        <!-- Agregar evento -->
-        <div class="evento agregar-evento" (click)="irCrearEvento()">
-            <div class="img-box agregar-box">
-                <span class="mas">+</span>
+    <div class="eventos-seccion" *ngIf="eventosProximos.length > 0">
+        <h3 class="seccion-titulo">Próximamente</h3>
+        <div class="eventos-grid">
+            <!-- Tarjetas de eventos proximos -->
+            <div class="evento" *ngFor="let evento of eventosProximos">
+                <div (click)="abrirModal(evento)" class="img-box" [class.sin-imagen]="!evento.urlImagenPortada">
+
+                    <ng-container *ngIf="evento.urlImagenPortada; else sinImagen">
+                        <img [src]="evento.urlImagenPortada" [alt]="evento.nombre"
+                            (error)="evento.urlImagenPortada = ''">
+                    </ng-container>
+
+                    <ng-template #sinImagen>
+                        <div class="placeholder">
+                            <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="Sin imagen">
+                            <span>Sin imagen</span>
+                        </div>
+                    </ng-template>
+
+                    <span style="background-color: rgb(59, 108, 206);" class="badge-activo">
+                        Próximamente
+                    </span>
+                </div>
+
+                <p [title]="evento.nombre">{{ evento.nombre }}</p>
+
+                <!-- <div class="acciones">
+                    <button class="btn iniciar" style="background-color: rgb(59, 108, 206);"
+                        (click)="modificarEvento(evento.id)">Editar</button>
+                    <button class="btn ver" (click)="abrirModal(evento)">Ver</button>
+                </div> -->
             </div>
-            <p>Agregar Evento</p>
         </div>
+    </div>
 
+    <div class="eventos-seccion" *ngIf="eventosCerrados.length > 0">
+        <h3 class="seccion-titulo">Cerrados</h3>
+        <div class="eventos-grid">
+            <!-- Tarjetas de eventos cerrados -->
+            <div class="evento" *ngFor="let evento of eventosCerrados">
+                <div (click)="abrirModal(evento)" class="img-box" [class.sin-imagen]="!evento.urlImagenPortada">
+
+                    <ng-container *ngIf="evento.urlImagenPortada; else sinImagen">
+                        <img [src]="evento.urlImagenPortada" [alt]="evento.nombre"
+                            (error)="evento.urlImagenPortada = ''">
+                    </ng-container>
+
+                    <ng-template #sinImagen>
+                        <div class="placeholder">
+                            <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="Sin imagen">
+                            <span>Sin imagen</span>
+                        </div>
+                    </ng-template>
+
+                    <span style="background-color: rgb(249, 77, 77);" class="badge-activo">
+                        Cerrado
+                    </span>
+                </div>
+
+                <p [title]="evento.nombre">{{ evento.nombre }}</p>
+                <!-- <div class="acciones">
+                    <button class="btn ver" >Ver</button>
+                </div> -->
+            </div>
+        </div>
     </div>
 </section>
 
@@ -89,18 +168,33 @@
                     <div class="modal-grid" [class.hidden]="mostrarQR">
                         <div class="modal-section">
                             <h4>Horarios</h4>
-                            <ul class="modal-list">
-                                <!-- <li *ngFor="let h of eventoSeleccionado.horarios">
-                                    {{ h.inicio }} — {{ h.fin }}
-                                </li> -->
+                            <ul *ngIf="eventoSeleccionado.listaJornadas" class="modal-list jornada-list">
+                                <li (click)="verPreinscritos(h)" *ngFor="let h of eventoSeleccionado.listaJornadas"
+                                    [class.selected]="jornadaSeleccionada === h">
+                                    {{ h.horaDeInicio }} — {{ h.horaDeFinalizacion }}
+                                </li>
+                            </ul>
+                            <p *ngIf="!eventoSeleccionado.listaJornadas">No hay horarios registrados</p>
+                        </div>
+                        <div class="modal-section" *ngIf="jornadaSeleccionada && !eventoSeleccionado.cerrado">
+                            <h4>Preinscritos</h4>
+                            <ul class="modal-list person-list">
+                                <li *ngFor="let p of jornadaSeleccionada.preinscritos">
+                                    {{ p.nombre + ' ' + p.apellido }}
+                                </li>
+                                <li *ngIf="jornadaSeleccionada.preinscritos?.length === 0" class="empty-msg">No hay
+                                    preinscritos</li>
                             </ul>
                         </div>
-                        <div class="modal-section">
-                            <h4>Preinscritos</h4>
-                            <ul class="modal-list">
-                                <!-- <li *ngFor="let p of eventoSeleccionado.preinscritos">
-                                    {{ p }}
-                                </li> -->
+                        <div class="modal-section"
+                            *ngIf="jornadaSeleccionada && (eventoSeleccionado.activo || eventoSeleccionado.cerrado)">
+                            <h4>Asistentes</h4>
+                            <ul class="modal-list person-list">
+                                <li *ngFor="let a of jornadaSeleccionada.asistentes">
+                                    {{ a.nombre + ' ' + a.apellido }}
+                                </li>
+                                <li *ngIf="jornadaSeleccionada.asistentes?.length === 0" class="empty-msg">No hay
+                                    asistentes</li>
                             </ul>
                         </div>
                     </div>
@@ -111,11 +205,18 @@
 
         <footer class="modal-footer">
             <div class="footer-left">
-                <button class="btn ver" (click)="modificarEvento()">Modificar</button>
+                <button class="btn ver" *ngIf="!eventoSeleccionado.cerrado"
+                    (click)="modificarEvento(eventoSeleccionado.id)">Modificar</button>
                 <button class="btn-danger" (click)="eliminarEvento()">Eliminar</button>
-                <button class="btn iniciar" (click)="iniciarEvento()">Iniciar</button>
+                <!-- <button class="btn iniciar" *ngIf="eventoSeleccionado.activo && !eventoSeleccionado.cerrado"
+                    (click)="iniciarEvento()">Ver</button> -->
+                <button class="btn btn-excel"
+                    *ngIf="jornadaSeleccionada && (eventoSeleccionado.activo || eventoSeleccionado.cerrado)">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">download</span> Exportar Excel
+                </button>
             </div>
-            <button class="btn-qr" (click)="toggleQR()">
+            <button class="btn-qr" (click)="toggleQR()"
+                *ngIf="jornadaSeleccionada && eventoSeleccionado.activo && !eventoSeleccionado.cerrado">
                 <span class="material-symbols-outlined">qr_code_2</span>
             </button>
         </footer>

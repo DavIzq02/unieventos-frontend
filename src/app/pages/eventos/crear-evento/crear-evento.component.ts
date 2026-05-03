@@ -135,42 +135,64 @@ export class CrearEventoComponent implements OnInit {
 
       this.nuevoEvento.id = eventoCreado.data.id;
 
-      const eventoComunidadCreado: any = await firstValueFrom(this.eventosService.crearEventoComunidad(this.listaComunidadesSeleccionadas, eventoCreado.data.id));
-      if (eventoComunidadCreado.codigo != 201) {
+      if (this.listaComunidadesSeleccionadas.length > 0) {
+        const eventoComunidadCreado: any = await firstValueFrom(this.eventosService.crearEventoComunidad(this.listaComunidadesSeleccionadas, eventoCreado.data.id));
+        if (eventoComunidadCreado.codigo != 201) {
+          Swal.fire({
+            title: 'Error al añadir el evento a las comunidades',
+            text: eventoComunidadCreado.mensaje,
+            icon: 'error',
+            confirmButtonColor: '#1f5fa8'
+          });
+          return;
+        }
+      } else {
         Swal.fire({
-          title: 'Error al añadir el evento a las comunidades',
-          text: eventoComunidadCreado.mensaje,
-          icon: 'error',
-          confirmButtonColor: '#1f5fa8'
-        });
-        return;
-      }
-      this.nuevoEvento.horarios.forEach((horario: any) => {
-        horario.evento.id = this.nuevoEvento.id;
-      });
-
-      const listaJornadasCreadas: any = await firstValueFrom(this.eventosService.crearJornadasEvento(this.nuevoEvento.horarios));
-      if (listaJornadasCreadas.codigo != 201) {
-        Swal.fire({
-          title: 'Error al crear las jornadas del evento',
-          text: listaJornadasCreadas.mensaje,
-          icon: 'error',
-          confirmButtonColor: '#1f5fa8'
-        });
-        return;
-      }
-
-      const cargarFotoEvento: any = await firstValueFrom(this.eventosService.updatePortadaEvento(this.nuevoEvento.id, this.imagenPreview));
-      if (cargarFotoEvento.codigo != 200) {
-        Swal.fire({
-          title: 'Error al cargar la foto del evento',
-          text: cargarFotoEvento.mensaje,
-          icon: 'error',
+          title: 'Atención',
+          text: 'El evento debe estar dirigido al menos a una comunidad',
+          icon: 'warning',
           confirmButtonColor: '#1f5fa8'
         });
         return;
       }
 
+      if (this.nuevoEvento.horarios.length > 0) {
+        this.nuevoEvento.horarios.forEach((horario: any) => {
+          horario.evento.id = this.nuevoEvento.id;
+        });
+        if (this.nuevoEvento.horarios.some((horario: any) => horario.horaDeInicio == '' || horario.horaDeFinalizacion == '')) {
+          Swal.fire({
+            title: 'Atención',
+            text: 'Todas las jornadas deben tener una hora de inicio y una hora de finalización',
+            icon: 'warning',
+            confirmButtonColor: '#1f5fa8'
+          });
+          return;
+        }
+        const listaJornadasCreadas: any = await firstValueFrom(this.eventosService.crearJornadasEvento(this.nuevoEvento.horarios));
+        if (listaJornadasCreadas.codigo != 201) {
+          Swal.fire({
+            title: 'Error al crear las jornadas del evento',
+            text: listaJornadasCreadas.mensaje,
+            icon: 'error',
+            confirmButtonColor: '#1f5fa8'
+          });
+          return;
+        }
+      }
+
+      if (this.imagenPreview != null) {
+        const cargarFotoEvento: any = await firstValueFrom(this.eventosService.upLoadPortadaEvento(this.nuevoEvento.id, this.imagenPreview));
+        if (cargarFotoEvento.codigo != 200) {
+          Swal.fire({
+            title: 'Error al cargar la foto del evento',
+            text: cargarFotoEvento.mensaje,
+            icon: 'error',
+            confirmButtonColor: '#1f5fa8'
+          });
+          return;
+        }
+      }
       Swal.fire({
         title: '¡Evento creado!',
         text: `${this.nuevoEvento.nombre} fue creado exitosamente`,

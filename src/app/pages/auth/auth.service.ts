@@ -85,6 +85,7 @@ export class AuthService {
 
   eliminarUsuario() {
     localStorage.removeItem('usuario');
+    localStorage.clear();
   }
 
   cerrarSesion(): void {

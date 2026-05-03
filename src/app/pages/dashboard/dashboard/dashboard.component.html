@@ -18,12 +18,26 @@
         <h2>Eventos actuales</h2>
         <div class="eventos" *ngIf="listaEventosActuales.length > 0">
             <div class="card" *ngFor="let evento of listaEventosActuales" (click)="verDetalle(evento)">
-                <img [src]="evento.urlImagenPortada" [alt]="evento.nombre">
-                <p>{{ evento.nombre }}</p>
+                <div class="img-box" [class.sin-imagen]="!evento.urlImagenPortada">
+
+                    <ng-container *ngIf="evento.urlImagenPortada; else sinImagen">
+                        <img [src]="evento.urlImagenPortada" [alt]="evento.nombre"
+                            (error)="evento.urlImagenPortada = ''">
+                    </ng-container>
+
+                    <ng-template #sinImagen>
+                        <div class="placeholder">
+                            <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="Sin imagen">
+                            <span>Sin imagen</span>
+                        </div>
+                    </ng-template>
+                </div>
+
+                <p [title]="evento.nombre">{{ evento.nombre }}</p>
             </div>
         </div>
         <p class="mensaje-vacio" *ngIf="listaEventosActuales.length === 0">
-            No hay eventos registrados
+            ¡No te pierdas nuestras actividades actuales! Mantente atento para conocer los eventos.
         </p>
     </section>
 
@@ -32,12 +46,26 @@
         <h2>Próximos eventos</h2>
         <div class="eventos" *ngIf="listaEventosProximos.length > 0">
             <div class="card" *ngFor="let evento of listaEventosProximos" (click)="verDetalle(evento)">
-                <img [src]="evento.urlImagenPortada" [alt]="evento.nombre">
-                <p>{{ evento.nombre }}</p>
+                <div class="img-box" [class.sin-imagen]="!evento.urlImagenPortada">
+
+                    <ng-container *ngIf="evento.urlImagenPortada; else sinImagen">
+                        <img [src]="evento.urlImagenPortada" [alt]="evento.nombre"
+                            (error)="evento.urlImagenPortada = ''">
+                    </ng-container>
+
+                    <ng-template #sinImagen>
+                        <div class="placeholder">
+                            <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="Sin imagen">
+                            <span>Sin imagen</span>
+                        </div>
+                    </ng-template>
+                </div>
+
+                <p [title]="evento.nombre">{{ evento.nombre }}</p>
             </div>
         </div>
         <p class="mensaje-vacio" *ngIf="listaEventosProximos.length === 0">
-            No hay eventos registrados
+            ¡Mantente atento! Estamos organizando próximos eventos para ti.
         </p>
     </section>
 
@@ -46,12 +74,26 @@
         <h2>Eventos que podrían interesarte</h2>
         <div class="eventos" *ngIf="listaEventosInteres.length > 0">
             <div class="card" *ngFor="let evento of listaEventosInteres" (click)="verDetalle(evento)">
-                <img [src]="evento.urlImagenPortada" [alt]="evento.nombre">
-                <p>{{ evento.nombre }}</p>
+                <div class="img-box" [class.sin-imagen]="!evento.urlImagenPortada">
+
+                    <ng-container *ngIf="evento.urlImagenPortada; else sinImagen">
+                        <img [src]="evento.urlImagenPortada" [alt]="evento.nombre"
+                            (error)="evento.urlImagenPortada = ''">
+                    </ng-container>
+
+                    <ng-template #sinImagen>
+                        <div class="placeholder">
+                            <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="Sin imagen">
+                            <span>Sin imagen</span>
+                        </div>
+                    </ng-template>
+                </div>
+
+                <p [title]="evento.nombre">{{ evento.nombre }}</p>
             </div>
         </div>
         <p class="mensaje-vacio" *ngIf="listaEventosInteres.length === 0">
-            No hay eventos registrados
+            No estés triste, mantente atento para conocer los próximos eventos hechos a la medida para ti.
         </p>
     </section>
 
@@ -60,27 +102,56 @@
         <h2>Eventos de tu comunidad</h2>
         <div class="eventos" *ngIf="listaEventosComunidad.length > 0">
             <div class="card" *ngFor="let evento of listaEventosComunidad" (click)="verDetalle(evento)">
-                <img [src]="evento.urlImagenPortada" [alt]="evento.nombre">
-                <p>{{ evento.nombre }}</p>
+                <div class="img-box" [class.sin-imagen]="!evento.urlImagenPortada">
+
+                    <ng-container *ngIf="evento.urlImagenPortada; else sinImagen">
+                        <img [src]="evento.urlImagenPortada" [alt]="evento.nombre"
+                            (error)="evento.urlImagenPortada = ''">
+                    </ng-container>
+
+                    <ng-template #sinImagen>
+                        <div class="placeholder">
+                            <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="Sin imagen">
+                            <span>Sin imagen</span>
+                        </div>
+                    </ng-template>
+                </div>
+
+                <p [title]="evento.nombre">{{ evento.nombre }}</p>
             </div>
         </div>
         <p class="mensaje-vacio" *ngIf="listaEventosComunidad.length === 0">
-            No hay eventos registrados
+            Próximamente habrá eventos de tu comunidad, mantente atento.
         </p>
     </section>
 
     <!--EVENTOS ASISTIDOS-->
     <section>
         <h2>Eventos Asistidos</h2>
+
+        <div class="eventos" *ngIf="listaEventosAsistidos.length > 0">
+            <div class="card" *ngFor="let evento of listaEventosAsistidos" (click)="verDetalle(evento)">
+                <div class="img-box" [class.sin-imagen]="!evento.urlImagenPortada">
+
+                    <ng-container *ngIf="evento.urlImagenPortada; else sinImagen">
+                        <img [src]="evento.urlImagenPortada" [alt]="evento.nombre"
+                            (error)="evento.urlImagenPortada = ''">
+                    </ng-container>
+
+                    <ng-template #sinImagen>
+                        <div class="placeholder">
+                            <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="Sin imagen">
+                            <span>Sin imagen</span>
+                        </div>
+                    </ng-template>
+                </div>
+
+                <p [title]="evento.nombre">{{ evento.nombre }}</p>
+            </div>
+        </div>
         <div class="mensaje" *ngIf="listaEventosAsistidos.length === 0">
             <p>¡Quédate atento a los eventos!</p>
             <p>Hasta el momento no has asistido a ningún evento</p>
-        </div>
-        <div class="eventos" *ngIf="listaEventosAsistidos.length > 0">
-            <div class="card" *ngFor="let evento of listaEventosAsistidos" (click)="verDetalle(evento)">
-                <img [src]="evento.urlImagenPortada" [alt]="evento.nombre">
-                <p>{{ evento.nombre }}</p>
-            </div>
         </div>
     </section>
 
@@ -89,9 +160,66 @@
 
 
 <!-- DETALLE EVENTO -->
-<div class="detalle" *ngIf="eventoDetalle">
-    <h2>{{ eventoDetalle.nombre }}</h2>
-    <img [src]="eventoDetalle.urlImagenPortada" [alt]="eventoDetalle.nombre">
-    <p>{{ eventoDetalle.descripcion }}</p>
-    <button (click)="volver()">Volver</button>
+<div class="modal-overlay" *ngIf="eventoDetalle" (click)="volver()"></div>
+<div class="detalle-ampliado" *ngIf="eventoDetalle">
+    <div class="detalle-header">
+        <h2>{{ eventoDetalle.nombre }}</h2>
+        <button class="btn-close" (click)="volver()">&times;</button>
+    </div>
+
+    <div class="detalle-body">
+        <div class="detalle-izq">
+            <div>
+
+                <ng-container *ngIf="eventoDetalle.urlImagenPortada; else sinImagen">
+                    <img [src]="eventoDetalle.urlImagenPortada" [alt]="eventoDetalle.nombre"
+                        (error)="eventoDetalle.urlImagenPortada = ''">
+                </ng-container>
+
+                <ng-template #sinImagen>
+                    <div class="placeholder">
+                        <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="Sin imagen">
+                        <span>Sin imagen</span>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+        <div class="detalle-der">
+            <p class="tipo-evento"><strong>Tipo:</strong> {{ eventoDetalle.nombreTipoEvento }}</p>
+            <p class="desc">{{ eventoDetalle.descripcion }}</p>
+
+            <div class="comunidades" *ngIf="listaComunidadesEvento && listaComunidadesEvento.length > 0">
+                <strong>Comunidades:</strong>
+                <ul>
+                    <li *ngFor="let com of listaComunidadesEvento">{{ com.nombre }}</li>
+                </ul>
+            </div>
+
+            <div class="jornadas-section">
+                <strong>Jornadas:</strong>
+                <ul class="lista-jornadas"
+                    *ngIf="eventoDetalle.listaJornadas && eventoDetalle.listaJornadas.length > 0; else noJornadas">
+                    <li *ngFor="let jornada of eventoDetalle.listaJornadas"
+                        [class.selected]="jornadaSeleccionada === jornada" (click)="seleccionarJornada(jornada)">
+                        {{ jornada.horaDeInicio }} — {{ jornada.horaDeFinalizacion }}
+                    </li>
+                </ul>
+                <ng-template #noJornadas>
+                    <p class="text-muted">No hay jornadas registradas</p>
+                </ng-template>
+            </div>
+
+            <div class="acciones-jornada" *ngIf="jornadaSeleccionada">
+                <button class="btn-cancelar" *ngIf="esEventoProximo(eventoDetalle) && jornadaSeleccionada.esInscrito"
+                    (click)="inscribirse()">
+                    No puedo asistir</button>
+
+                <button class="btn-asistir" *ngIf="esEventoProximo(eventoDetalle) && !jornadaSeleccionada.esInscrito"
+                    (click)="inscribirse()">Quiero
+                    Asistir</button>
+                <button class="btn-aqui" *ngIf="esEventoActivo(eventoDetalle)" (click)="registrarAsistencia()">Aquí
+                    estoy</button>
+            </div>
+        </div>
+    </div>
 </div>

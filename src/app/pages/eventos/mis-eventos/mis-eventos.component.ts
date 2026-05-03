@@ -5,6 +5,8 @@ import { EventosService } from '../../../core/services/eventos.service';
 import { BreadcrumbItem } from '../../../shared/models/breadcrumb-item.model';
 import Swal from 'sweetalert2';
 import { Evento } from 'src/app/shared/models/evento.model';
+import { firstValueFrom } from 'rxjs';
+import { InscripcionesService } from 'src/app/core/services/inscripciones.service';
 
 @Component({
   selector: 'app-mis-eventos',
@@ -20,7 +22,21 @@ export class MisEventosComponent implements OnInit {
 
   listaEventos: Evento[] = [];
   listaEventosOriginal: Evento[] = [];
+
+  get eventosActivos(): Evento[] {
+    return this.listaEventos.filter(e => e.activo && !e.cerrado);
+  }
+
+  get eventosProximos(): Evento[] {
+    return this.listaEventos.filter(e => !e.activo && !e.cerrado);
+  }
+
+  get eventosCerrados(): Evento[] {
+    return this.listaEventos.filter(e => e.cerrado);
+  }
+
   eventoSeleccionado: Evento | null = null;
+  jornadaSeleccionada: any = null;
   modalAbierto = false;
   mostrarQR = false;
   categoriaSeleccionada: any;
@@ -29,6 +45,7 @@ export class MisEventosComponent implements OnInit {
 
   constructor(
     private eventosService: EventosService,
+    private inscripcionesService: InscripcionesService,
     private router: Router
   ) { }
 
@@ -80,15 +97,43 @@ export class MisEventosComponent implements OnInit {
     });
   }
 
-  abrirModal(evento: Evento): void {
+  async abrirModal(evento: Evento): Promise<void> {
     this.eventoSeleccionado = evento;
+    this.jornadaSeleccionada = null;
+    console.log("Id de evento", this.eventoSeleccionado.id)
+    const eventoBuscar = {
+      id: this.eventoSeleccionado.id,
+      nombre: this.eventoSeleccionado.nombre,
+    }
+    const jornadas = await firstValueFrom(this.eventosService.getJornadasByEvento(eventoBuscar));
+    this.eventoSeleccionado.listaJornadas = jornadas.listaRespuesta;
     this.modalAbierto = true;
     this.mostrarQR = false;
+  }
+
+  async verPreinscritos(jornada: any) {
+    this.jornadaSeleccionada = jornada;
+    console.log("Jornada: ", this.jornadaSeleccionada)
+    const resp: any = await firstValueFrom(this.inscripcionesService.getUsuariosByJornada(this.jornadaSeleccionada));
+    if (resp.codigo == 200) {
+      this.jornadaSeleccionada.preinscritos = resp.listaRespuesta;
+      console.log("Preinscritos: ", this.jornadaSeleccionada.preinscritos)
+    } else if (resp.codigo == 404) {
+      this.jornadaSeleccionada.preinscritos = [];
+    } else {
+      Swal.fire({
+        title: 'Error al obtener los preinscritos',
+        text: resp.mensaje,
+        icon: 'error',
+        confirmButtonColor: '#1f5fa8'
+      });
+    }
   }
 
   cerrarModal(): void {
     this.modalAbierto = false;
     this.eventoSeleccionado = null;
+    this.jornadaSeleccionada = null;
     this.mostrarQR = false;
   }
 
@@ -120,28 +165,43 @@ export class MisEventosComponent implements OnInit {
       cancelButtonColor: '#2f80c3',
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar'
-    }).then(result => {
+    }).then(async result => {
       if (result.isConfirmed && this.eventoSeleccionado) {
-        //this.eventosService.eliminarEvento(this.eventoSeleccionado.id);
-        this.cerrarModal();
-        this.cargarEventos();
-        Swal.fire({
-          title: 'Eliminado',
-          text: 'El evento fue eliminado correctamente',
-          icon: 'success',
-          confirmButtonColor: '#1f5fa8'
-        });
+        try {
+          const respDelete: any = await firstValueFrom(this.eventosService.inactivarEvento(this.eventoSeleccionado.id));
+          if (respDelete.codigo == 202) {
+            this.cerrarModal();
+            this.cargarEventos();
+            Swal.fire({
+              title: 'Eliminado',
+              text: 'El evento fue eliminado correctamente',
+              icon: 'success',
+              confirmButtonColor: '#1f5fa8'
+            });
+          } else {
+            Swal.fire({
+              title: 'Error al eliminar el evento',
+              text: respDelete.mensaje,
+              icon: 'error',
+              confirmButtonColor: '#1f5fa8'
+            });
+          }
+        } catch (error: any) {
+          Swal.fire({
+            title: 'Error al eliminar el evento',
+            text: error.message,
+            icon: 'error',
+            confirmButtonColor: '#1f5fa8'
+          });
+        }
+
+
       }
     });
   }
 
-  modificarEvento(): void {
-    Swal.fire({
-      title: 'Próximamente',
-      text: 'El módulo de modificación estará disponible pronto',
-      icon: 'info',
-      confirmButtonColor: '#1f5fa8'
-    });
+  modificarEvento(id: number): void {
+    this.router.navigate(['/eventos/modificar-evento', id]);
   }
 
   irCrearEvento(): void {

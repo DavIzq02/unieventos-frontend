@@ -8,4 +8,5 @@ export interface Evento {
     fechaDeFinalizacion: Date;
     activo?: boolean;
     cerrado?: boolean;
+    listaJornadas?: any[];
 }
