@@ -16,9 +16,7 @@
             </option>
         </select>
     </div>
-
-    <div class="eventos-seccion" *ngIf="eventosActivos.length > 0 || listaEventos.length === 0">
-        <h3 class="seccion-titulo" *ngIf="listaEventos.length > 0">Activos</h3>
+    <div class="eventos-seccion">
         <div class="eventos-grid">
             <!-- Agregar evento -->
             <div class="evento agregar-evento" (click)="irCrearEvento()">
@@ -27,6 +25,12 @@
                 </div>
                 <p>Agregar Evento</p>
             </div>
+        </div>
+    </div>
+    <div class="eventos-seccion" *ngIf="eventosActivos.length > 0 || listaEventos.length === 0">
+        <h3 class="seccion-titulo" *ngIf="listaEventos.length > 0">Activos</h3>
+        <div class="eventos-grid">
+
 
             <!-- Tarjetas de eventos activos -->
             <div class="evento" *ngFor="let evento of eventosActivos">

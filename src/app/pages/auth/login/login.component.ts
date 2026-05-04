@@ -71,9 +71,9 @@ export class LoginComponent {
             this.router.navigate(['/dashboard']);
           });
         } else {
-          if (res.mensaje == "Usuario no existe") {
+          if (res.mensaje == "Error interno del servidor Usuario no existe") {
             Swal.fire({
-              title: res.mensaje,
+              title: "Usuario no existe",
               text: "Crea tu usuario",
               icon: 'warning',
               confirmButtonColor: '#1f5fa8',
