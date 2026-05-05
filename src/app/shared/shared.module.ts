@@ -8,6 +8,7 @@ import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.componen
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { FormsModule } from '@angular/forms';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     RouterModule,
     FormsModule,
-    AngularMultiSelectModule
+    AngularMultiSelectModule,
+    ZXingScannerModule
   ],
   exports: [
     HeaderComponent,
@@ -29,7 +31,8 @@ import { FormsModule } from '@angular/forms';
     SidebarComponent,
     RouterModule,
     FormsModule,
-    AngularMultiSelectModule
+    AngularMultiSelectModule,
+    ZXingScannerModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

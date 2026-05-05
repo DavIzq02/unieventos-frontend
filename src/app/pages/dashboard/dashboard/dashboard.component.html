@@ -167,7 +167,7 @@
         <button class="btn-close" (click)="volver()">&times;</button>
     </div>
 
-    <div class="detalle-body">
+    <div class="detalle-body" *ngIf="!opcionesIngreso">
         <div class="detalle-izq">
             <div>
 
@@ -222,4 +222,48 @@
             </div>
         </div>
     </div>
-</div>
+
+    <div class="detalle-body opciones-ingreso-body" *ngIf="opcionesIngreso">
+        <!-- OPCIONES INICIALES -->
+        <div class="opciones-container" *ngIf="!modoQR && !modoCodigo">
+            <button class="btn-opcion-gigante" (click)="usarCamara = true; modoQR = true">
+                <img src="https://cdn-icons-png.flaticon.com/128/5627/5627284.png" alt="QR Icon">
+                <span>Leer código QR</span>
+            </button>
+
+            <button class="btn-opcion-gigante" (click)="digitarCodigo = true; modoCodigo = true">
+                <img src="https://cdn-icons-png.flaticon.com/512/2889/2889676.png" alt="Password Input Icon">
+                <span>Digitar código</span>
+            </button>
+        </div>
+
+        <div class="opciones-container" *ngIf="modoQR || modoCodigo">
+            <div *ngIf="modoQR">
+                <h4>Escanea el QR</h4>
+
+                <zxing-scanner *ngIf="usarCamara" (scanSuccess)="onScanSuccess($event)">
+                </zxing-scanner>
+
+                <button class="btn-cancelar" (click)="modoQR = false">
+                    Volver
+                </button>
+            </div>
+            <!-- CÓDIGO MANUAL -->
+            <div *ngIf="modoCodigo" class="codigo-manual-section">
+                <h4>Ingresa el código de asistencia</h4>
+                <div class="input-container">
+                    <input type="text" [(ngModel)]="codigoManual" placeholder="Ej: 123456" class="input-codigo">
+
+                </div>
+                <div class="acciones-opciones">
+                    <button class="btn-cancelar" (click)="modoCodigo = false">
+                        Volver
+                    </button>
+                    <button class="btn-asistir" (click)="enviarCodigoManual()">
+                        Entrar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>

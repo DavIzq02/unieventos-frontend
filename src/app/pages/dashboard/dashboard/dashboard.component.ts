@@ -6,6 +6,8 @@ import { DashboardService } from '../dashboard.service';
 import { firstValueFrom } from 'rxjs';
 import Swal from 'sweetalert2';
 import { InscripcionesService } from 'src/app/core/services/inscripciones.service';
+
+declare const $: any;
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -34,6 +36,13 @@ export class DashboardComponent implements OnInit {
 
   listaJornadasInscritas: any[] = [];
   eventoDetalle: Evento | null = null;
+  opcionesIngreso: boolean = false;
+  usarCamara: boolean = false;
+  digitarCodigo: boolean = false;
+
+  modoQR: boolean = false;
+  modoCodigo: boolean = false;
+  codigoManual: string = '';
   listaComunidadesEvento: any[] = [{
     nombre: "Comunidad 1"
   }, {
@@ -278,14 +287,36 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  onScanSuccess(result: string) {
+    console.log('QR leído:', result);
+
+    // detener cámara
+    this.usarCamara = false;
+
+    // enviar al backend
+    console.log(result)
+    this.registrarAsistencia();
+  }
+
+  enviarCodigoManual() {
+    if (!this.codigoManual || this.codigoManual.trim() === '') {
+      console.warn('Código vacío');
+      return;
+    }
+
+    this.registrarAsistencia();
+  }
+
   registrarAsistencia(): void {
-    if (!this.jornadaSeleccionada) return;
-    Swal.fire({
-      title: '¡Asistencia registrada!',
-      text: 'Tu asistencia ha sido confirmada.',
-      icon: 'success',
-      confirmButtonColor: '#2f80c3'
-    });
-    this.volver();
+    this.opcionesIngreso = true;
+    // this.eventoDetalle = null;
+    // if (!this.jornadaSeleccionada) return;
+    // Swal.fire({
+    //   title: '¡Asistencia registrada!',
+    //   text: 'Tu asistencia ha sido confirmada.',
+    //   icon: 'success',
+    //   confirmButtonColor: '#2f80c3'
+    // });
+    // this.volver();
   }
 }

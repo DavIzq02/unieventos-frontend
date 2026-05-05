@@ -212,4 +212,123 @@
     margin: 0 auto;
     display: block;
   }
+  .opciones-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .btn-opcion-gigante {
+    aspect-ratio: auto !important;
+    padding: 30px;
+    width: 100%;
+  }
+}
+
+/* Opciones de ingreso */
+.opciones-ingreso-body {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  min-height: 400px;
+}
+
+.opciones-container {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-opcion-gigante {
+  flex: 1;
+  max-width: 300px;
+  aspect-ratio: 1;
+  background: #f0f7ff;
+  border: 2px solid #2f80c3;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #2f80c3;
+}
+
+.btn-opcion-gigante img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  transition: all 0.3s ease;
+}
+
+.btn-opcion-gigante span {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.btn-opcion-gigante:hover {
+  background: #2f80c3;
+  color: white;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(47, 128, 195, 0.2);
+}
+
+.btn-opcion-gigante:hover img {
+  filter: brightness(0) invert(1);
+}
+
+.acciones-opciones {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Sección de Código Manual */
+.codigo-manual-section {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.codigo-manual-section h4 {
+  margin: 0;
+  color: #333;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.input-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.input-codigo {
+  width: 100%;
+  padding: 15px 20px;
+  font-size: 18px;
+  border: 2px solid #e0e6ed;
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.3s;
+  text-align: center;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+.input-codigo:focus {
+  border-color: #2f80c3;
+}
+.btn-asistir {
+  margin-left: 5px;
+}
+.btn-cancelar {
+  margin-right: 5px;
 }
