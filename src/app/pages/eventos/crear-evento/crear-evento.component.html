@@ -7,109 +7,196 @@
     </div>
 
     <form class="formulario-evento">
-        <div class="form-grid">
-
-            <!-- Columna izquierda -->
-            <div class="form-column">
-
-                <div class="form-group">
-                    <label>Nombre del Evento</label>
-                    <input type="text" [(ngModel)]="nuevoEvento.nombre" name="nombre" #nombre="ngModel">
-                    <span class="error" *ngIf="nombre.invalid && nombre.touched">
-                        El nombre del evento es requerido
-                    </span>
-                </div>
-
-                <div class="form-group">
-                    <label>Fecha de Finalización</label>
-                    <input type="date" [(ngModel)]="nuevoEvento.fechaDeFinalizacion" name="fechaDeFinalizacion"
-                        #fechaDeFinalizacion="ngModel">
-                    <span class="error" *ngIf="fechaDeFinalizacion.invalid && fechaDeFinalizacion.touched">
-                        La fecha de finalización es requerida
-                    </span>
-                </div>
-
-                <div class="form-group">
-                    <label>Descripción del evento</label>
-                    <textarea rows="4" [(ngModel)]="nuevoEvento.descripcion" name="descripcion"
-                        #descripcion="ngModel"></textarea>
-                    <span class="error" *ngIf="descripcion.invalid && descripcion.touched">
-                        La descripción del evento es requerida
-                    </span>
-                </div>
-
-                <div class="form-group">
-                    <label>Portada</label>
-                    <div class="upload-area" (click)="fileInput.click()">
-                        <img *ngIf="imagenPreview" [src]="nombreImagen" class="preview-img">
-                        <span *ngIf="!imagenPreview" class="material-symbols-outlined">add_a_photo</span>
-                    </div>
-                    <input #fileInput type="file" hidden accept="image/*" (change)="onImagenChange($event)">
-                </div>
-
+        <!-- Datos del Evento -->
+        <div class="form-section-title">
+            <span class="material-symbols-outlined">info</span>
+            <h3>Datos del Evento</h3>
+        </div>
+        <div class="form-grid-custom">
+            <div class="form-group">
+                <label>Nombre del Evento</label>
+                <input type="text" [(ngModel)]="nuevoEvento.nombre" name="nombre" #nombre="ngModel"
+                    placeholder="Ej: Congreso de Ingeniería">
+                <span class="error" *ngIf="nombre.invalid && nombre.touched">
+                    El nombre del evento es requerido
+                </span>
             </div>
 
-            <!-- Columna derecha -->
-            <div class="form-column">
+            <div class="form-group">
+                <label>Tipo de Evento</label>
+                <select class="form-select" [(ngModel)]="nuevoEvento.tipoDeEvento.id" name="tipoDeEvento"
+                    #tipoDeEvento="ngModel">
+                    <option value="" disabled>Seleccione una opción</option>
+                    <option *ngFor="let tipo of listaTipoEventos" [value]="tipo.id">{{ tipo.nombre }}</option>
+                </select>
+            </div>
 
-                <div class="form-group">
-                    <label>Fecha de Apertura</label>
-                    <input type="date" [(ngModel)]="nuevoEvento.fechaDeApertura" name="fechaDeApertura"
-                        #fechaDeApertura="ngModel">
-                    <span class="error" *ngIf="fechaDeApertura.invalid && fechaDeApertura.touched">
-                        La fecha de apertura es requerida
-                    </span>
+            <div class="form-group">
+                <label>Dirigido a</label>
+                <angular2-multiselect name="listaComunidades" [data]="listaComunidad"
+                    [(ngModel)]="listaComunidadesSeleccionadas" [settings]="multiselectComunidades"
+                    (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)"
+                    (onSelect)="onSelect($event)" (onDeSelect)="onDeSelect($event)">
+                </angular2-multiselect>
+            </div>
+
+            <div class="form-group full-width">
+                <label>Descripción del evento</label>
+                <textarea rows="4" [(ngModel)]="nuevoEvento.descripcion" name="descripcion" #descripcion="ngModel"
+                    placeholder="Escriba una breve descripción del evento..."></textarea>
+                <span class="error" *ngIf="descripcion.invalid && descripcion.touched">
+                    La descripción del evento es requerida
+                </span>
+            </div>
+        </div>
+
+        <!-- Multimedia del evento -->
+        <div class="form-section-title">
+            <span class="material-symbols-outlined">image</span>
+            <h3>Multimedia del evento</h3>
+        </div>
+        <div class="form-group">
+            <label>Portada del Evento</label>
+            <div class="upload-area-custom" (click)="fileInput.click()">
+                <img *ngIf="imagenPreview" [src]="nombreImagen" class="preview-img">
+                <div *ngIf="!imagenPreview" class="upload-placeholder">
+                    <span class="material-symbols-outlined">cloud_upload</span>
+                    <p>Haz clic para subir la imagen de portada</p>
+                    <small>Formatos aceptados: JPG, PNG. Máx 5MB</small>
                 </div>
+            </div>
+            <input #fileInput type="file" hidden accept="image/*" (change)="onImagenChange($event)">
+        </div>
 
-                <div class="form-group">
-                    <label>Dirigido a</label>
-                    <angular2-multiselect name="listaComunidades" [data]="listaComunidad"
-                        [(ngModel)]="listaComunidadesSeleccionadas" [settings]="multiselectComunidades"
-                        (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)"
-                        (onSelect)="onSelect($event)" (onDeSelect)="onDeSelect($event)">
-                    </angular2-multiselect>
-                </div>
+        <!-- Fechas del evento -->
+        <div class="form-section-title">
+            <span class="material-symbols-outlined">calendar_month</span>
+            <h3>Fechas del evento</h3>
+        </div>
+        <div class="form-grid-custom">
+            <div class="form-group">
+                <label>Fecha de Apertura</label>
+                <input type="date" [(ngModel)]="nuevoEvento.fechaDeApertura" name="fechaDeApertura"
+                    #fechaDeApertura="ngModel">
+                <span class="error" *ngIf="fechaDeApertura.invalid && fechaDeApertura.touched">
+                    La fecha de apertura es requerida
+                </span>
+            </div>
 
-                <div class="form-group">
-                    <label>Tipo de Evento</label>
-                    <select class="form-select" [(ngModel)]="nuevoEvento.tipoDeEvento.id" name="tipoDeEvento"
-                        #tipoDeEvento="ngModel">
-                        <option value="" disabled>Seleccione una opción</option>
-                        <option *ngFor="let tipo of listaTipoEventos" [value]="tipo.id">{{ tipo.nombre }}</option>
-                    </select>
-                </div>
+            <div class="form-group">
+                <label>Fecha de Finalización</label>
+                <input type="date" [(ngModel)]="nuevoEvento.fechaDeFinalizacion" name="fechaDeFinalizacion"
+                    #fechaDeFinalizacion="ngModel">
+                <span class="error" *ngIf="fechaDeFinalizacion.invalid && fechaDeFinalizacion.touched">
+                    La fecha de finalización es requerida
+                </span>
+            </div>
+        </div>
 
-                <!-- Horarios -->
-                <div class="form-group">
-                    <label>Horarios Disponibles</label>
-                    <div>
-                        <div *ngFor="let horario of nuevoEvento.horarios; let i = index" class="schedule-row">
-                            <div class="time-field">
-                                <label>Inicio</label>
-                                <input type="time" [(ngModel)]="horario.horaDeInicio" name="horaDeInicio"
-                                    #horaDeInicio="ngModel">
-                                <span class="error" *ngIf="horaDeInicio.invalid && horaDeInicio.touched">
-                                    El inicio es requerido
-                                </span>
-                            </div>
-                            <div class="time-field">
-                                <label>Fin</label>
-                                <input type="time" [(ngModel)]="horario.horaDeFinalizacion" name="horaDeFinalizacion"
-                                    #horaDeFinalizacion="ngModel">
-                                <span class="error" *ngIf="horaDeFinalizacion.invalid && horaDeFinalizacion.touched">
-                                    El fin es requerido
-                                </span>
-                            </div>
-                            <button type="button" class="btn-remove" (click)="eliminarHorario(i)">
-                                <span class="material-symbols-outlined">delete</span>
-                            </button>
-                        </div>
+        <!-- Jornadas del evento -->
+        <div class="form-section-title">
+            <span class="material-symbols-outlined">schedule</span>
+            <h3>Jornadas del evento</h3>
+        </div>
+        <div class="form-group">
+            <div class="jornadas-container">
+                <div *ngFor="let horario of nuevoEvento.horarios; let i = index" class="schedule-row-custom">
+                    <div class="schedule-number">{{ i + 1 }}</div>
+                    <div class="time-field">
+                        <label>Hora Inicio</label>
+                        <input type="time" [(ngModel)]="horario.horaDeInicio" name="horaDeInicio-{{i}}"
+                            #horaDeInicio="ngModel">
                     </div>
-                    <button type="button" class="btn-secondary" (click)="agregarHorario()">
-                        <span class="material-symbols-outlined">add_circle</span> Agregar Horario
+                    <div class="time-field">
+                        <label>Hora Fin</label>
+                        <input type="time" [(ngModel)]="horario.horaDeFinalizacion" name="horaDeFinalizacion-{{i}}"
+                            #horaDeFinalizacion="ngModel">
+                    </div>
+                    <button type="button" class="btn-remove-custom" (click)="eliminarHorario(i)"
+                        title="Eliminar jornada">
+                        <span class="material-symbols-outlined">close</span>
                     </button>
                 </div>
+            </div>
+            <button type="button" class="btn-add-schedule" (click)="agregarHorario()">
+                <span class="material-symbols-outlined">add</span> Agregar Nueva Jornada
+            </button>
+        </div>
 
+        <!-- Seguridad del Evento -->
+        <div class="form-section-title">
+            <span class="material-symbols-outlined">security</span>
+            <h3>Seguridad del Evento</h3>
+        </div>
+
+        <div class="security-grid">
+            <div class="checkbox-item">
+                <label class="checkbox-container">
+                    Solo permitir asistencia de preinscritos
+                    <input type="checkbox" [(ngModel)]="nuevoEvento.requiereInscripcion" name="requiereInscripcion">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+
+            <div class="checkbox-item">
+                <label class="checkbox-container">
+                    Requiere código de ingreso
+                    <input type="checkbox" [(ngModel)]="nuevoEvento.requiereCodigo" name="requiereCodigo"
+                        (change)="resetCodigoOptions()">
+                    <span class="checkmark"></span>
+                </label>
+
+                <div class="code-options-container" *ngIf="nuevoEvento.requiereCodigo">
+                    <div class="radio-group">
+                        <label class="radio-container">
+                            Estático
+                            <input type="radio" name="tipoCodigo" [(ngModel)]="nuevoEvento.codigoDinamico"
+                                [value]="false">
+                            <span class="radio-mark"></span>
+                        </label>
+                        <label class="radio-container">
+                            Dinámico
+                            <input type="radio" name="tipoCodigo" [(ngModel)]="nuevoEvento.codigoDinamico"
+                                [value]="true">
+                            <span class="radio-mark"></span>
+                        </label>
+                    </div>
+
+                    <div class="conditional-input no-padding" *ngIf="!nuevoEvento.codigoDinamico">
+                        <input type="text" [(ngModel)]="nuevoEvento.codigo" name="codigo"
+                            placeholder="Digite el código de acceso">
+                    </div>
+
+                    <div class="info-notice no-margin" *ngIf="nuevoEvento.codigoDinamico">
+                        <span class="material-symbols-outlined">info</span>
+                        <p>El código dinámico es de un solo uso por asistente y cambia cada 2 minutos.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checkbox-item">
+                <label class="checkbox-container">
+                    Revisar preinscritos antes de iniciar
+                    <input type="checkbox" [(ngModel)]="nuevoEvento.revisarPreinscritos" name="revisarPreinscritos">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            <div class="checkbox-item">
+                <label class="checkbox-container">
+                    Apertura automatica
+                    <input type="checkbox" [(ngModel)]="nuevoEvento.abierto" name="requiereAperturaManual">
+                    <span class="checkmark"></span>
+                    <div class="info-notice no-margin" *ngIf="!nuevoEvento.abierto">
+                        <span class="material-symbols-outlined">info</span>
+                        <p>El administrador deberá iniciar el evento manualmente
+                            para que los usuarios puedan registrar la asistencia,no importa si el evento ya dió inicio.
+                        </p>
+                    </div>
+                    <div class="info-notice no-margin" *ngIf="nuevoEvento.abierto">
+                        <span class="material-symbols-outlined">info</span>
+                        <p>El evento se abrirá automáticamente en la fecha y jornadas establecidas.</p>
+                    </div>
+                </label>
             </div>
         </div>
 

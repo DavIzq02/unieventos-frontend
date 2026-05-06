@@ -35,7 +35,14 @@ export class CrearEventoComponent implements OnInit {
     fechaDeApertura: '',
     tipoDeEvento: { id: '' },
     idUsuarioCreador: { id: '' },
-    horarios: [{ horaDeInicio: '', horaDeFinalizacion: '', evento: { id: '' } }]
+    horarios: [{ horaDeInicio: '', horaDeFinalizacion: '', evento: { id: '' } }],
+    soloPreinscritos: false,
+    requiereCodigo: false,
+    tipoCodigo: 'estatico', // 'estatico' o 'dinamico'
+    codigo: null,
+    codigoDinamico: false,
+    revisarPreinscritos: false,
+    abierto: true
   };
   multiselectComunidades = {
     lazyLoading: true,
@@ -114,6 +121,24 @@ export class CrearEventoComponent implements OnInit {
 
   }
 
+  resetCodigoOptions(): void {
+    if (this.nuevoEvento.requiereCodigo) {
+      this.nuevoEvento.tipoCodigo = 'estatico';
+    } else {
+      this.nuevoEvento.codigo = '';
+      this.nuevoEvento.codigoDinamico = false;
+    }
+  }
+
+
+  generarCodigo(): string {
+    let codigo = '';
+    while (codigo.length < 8) {
+      codigo += Math.random().toString(36).substring(2);
+    }
+    return codigo.substring(0, 8).toUpperCase();
+  }
+
   async crearEvento(): Promise<void> {
 
     try {
@@ -121,7 +146,15 @@ export class CrearEventoComponent implements OnInit {
       this.nuevoEvento.tipoDeEvento.id = Number(this.nuevoEvento.tipoDeEvento.id);
       this.nuevoEvento.fechaDeFinalizacion = new Date(this.nuevoEvento.fechaDeFinalizacion);
       this.nuevoEvento.fechaDeApertura = new Date(this.nuevoEvento.fechaDeApertura);
-
+      if (this.nuevoEvento.requiereCodigo) {
+        if (this.nuevoEvento.codigoDinamico) {
+          this.nuevoEvento.codigo = this.generarCodigo();
+        } else {
+          this.nuevoEvento.codigo = Number(this.nuevoEvento.codigo)
+        }
+      } else {
+        this.nuevoEvento.codigo = "";
+      }
       const eventoCreado: any = await firstValueFrom(this.eventosService.crearEvento(this.nuevoEvento));
       if (eventoCreado.codigo != 201) {
         Swal.fire({
@@ -214,18 +247,109 @@ export class CrearEventoComponent implements OnInit {
   }
   async onSubmit(): Promise<void> {
 
-    // if (this.nuevoEvento.id != null) {
+    const formularioValido: boolean = await this.validarFormulario();
+    if (formularioValido) {
+      await this.crearEvento()
+    }
+
+  }
+
+  async validarFormulario(): Promise<boolean> {
+
+    if (this.nuevoEvento.nombre == '') {
+      this.mostrarErrorFormulario('El nombre del evento es requerido');
+      return false;
+    }
+
+    if (this.nuevoEvento.tipoDeEvento.id == '') {
+      this.mostrarErrorFormulario('El tipo de evento es requerido');
+      return false;
+    }
+
+    if (this.nuevoEvento.descripcion == '') {
+      this.mostrarErrorFormulario('La descripción del evento es requerida');
+      return false;
+    }
+
+    if (this.nuevoEvento.fechaDeApertura == '') {
+      this.mostrarErrorFormulario('La fecha de apertura es requerida');
+      return false;
+    }
+
+    if (this.nuevoEvento.fechaDeFinalizacion == '') {
+      this.mostrarErrorFormulario('La fecha de finalización es requerida');
+      return false;
+    }
+
+    for (const horario of this.nuevoEvento.horarios) {
+      if (horario.horaDeInicio == '' || horario.horaDeFinalizacion == '') {
+        this.mostrarErrorFormulario('Todas las jornadas deben tener una hora de inicio y una hora de finalización');
+        return false;
+      }
+    }
+
+    return true;
+
+    // if (this.nuevoEvento.tipoDeEvento.id == '') {
     //   Swal.fire({
-    //     title: 'Atención',
-    //     text: 'El evento ya fué creado',
-    //     icon: 'warning',
+    //     title: 'Error',
+    //     text: 'El tipo de evento es requerido',
+    //     icon: 'error',
     //     confirmButtonColor: '#1f5fa8'
     //   });
     //   return;
     // }
 
-    await this.crearEvento()
+    // if (this.nuevoEvento.descripcion == '') {
+    //   Swal.fire({
+    //     title: 'Error',
+    //     text: 'La descripción del evento es requerida',
+    //     icon: 'error',
+    //     confirmButtonColor: '#1f5fa8'
+    //   });
+    //   return;
+    // }
 
+    // if (this.nuevoEvento.fechaDeApertura == '') {
+    //   Swal.fire({
+    //     title: 'Error',
+    //     text: 'La fecha de apertura es requerida',
+    //     icon: 'error',
+    //     confirmButtonColor: '#1f5fa8'
+    //   });
+    //   return;
+    // }
+
+    // if (this.nuevoEvento.fechaDeFinalizacion == '') {
+    //   Swal.fire({
+    //     title: 'Error',
+    //     text: 'La fecha de finalización es requerida',
+    //     icon: 'error',
+    //     confirmButtonColor: '#1f5fa8'
+    //   });
+    //   return;
+    // }
+
+    // if (this.nuevoEvento.horarios.length == 0) {
+    //   Swal.fire({
+    //     title: 'Error',
+    //     text: 'El evento debe tener al menos un horario',
+    //     icon: 'error',
+    //     confirmButtonColor: '#1f5fa8'
+    //   });
+    //   return;
+    // }
+
+  }
+
+  mostrarErrorFormulario(msj: string) {
+    Swal.fire({
+      title: 'Formulario incompleto',
+      text: msj,
+      icon: 'warning',
+      confirmButtonColor: '#1f5fa8'
+    });
+    return;
   }
 
   onSelectAll(items: any) {

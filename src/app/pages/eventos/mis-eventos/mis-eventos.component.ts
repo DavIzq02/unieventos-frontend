@@ -39,6 +39,8 @@ export class MisEventosComponent implements OnInit {
   jornadaSeleccionada: any = null;
   modalAbierto = false;
   mostrarQR = false;
+  cargandoQR = true;
+  urlQrEvento: any;
   categoriaSeleccionada: any;
   textoBusqueda: any;
   listaTipoEventos: any[] = [];
@@ -137,8 +139,16 @@ export class MisEventosComponent implements OnInit {
     this.mostrarQR = false;
   }
 
-  toggleQR(): void {
+  async toggleQR(): Promise<void> {
     this.mostrarQR = !this.mostrarQR;
+    this.cargandoQR = true;
+    this.urlQrEvento = '';
+    const idEvento = this.eventoSeleccionado?.id || 0;
+    this.eventosService.getQrEvento(idEvento, this.jornadaSeleccionada.id).subscribe((imagen: any) => {
+      this.urlQrEvento = URL.createObjectURL(imagen);
+      console.log("QR del evento: ", imagen)
+    });
+    this.cargandoQR = false;
   }
 
   iniciarEvento(): void {

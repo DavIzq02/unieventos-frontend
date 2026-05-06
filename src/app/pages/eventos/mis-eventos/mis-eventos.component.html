@@ -48,8 +48,12 @@
                         </div>
                     </ng-template>
 
-                    <span style="background-color: rgb(39, 140, 39);" class="badge-activo">
-                        Activo
+                    <span *ngIf="evento.abierto" style="background-color: rgb(39, 140, 39);" class="badge-activo">
+                        Abierto
+                    </span>
+
+                    <span *ngIf="!evento.abierto" style="background-color: rgb(249, 185, 77);" class="badge-activo">
+                        Pendiente por abrir
                     </span>
                 </div>
 
@@ -163,9 +167,20 @@
 
                     <!-- QR -->
                     <div class="qr-wrapper" *ngIf="mostrarQR">
-                        <h3>QR Pre-registro</h3>
-                        <span class="material-symbols-outlined qr-icon">qr_code_2</span>
+                        <h3>QR de asistencia</h3>
+                        <div *ngIf="!cargandoQR">
+
+                            <img [src]="urlQrEvento" [alt]="'QR del evento ' + eventoSeleccionado.nombre"
+                                onerror="this.src='https://cdn-icons-png.flaticon.com/512/4076/4076549.png'">
+                        </div>
+
+                        <div *ngIf="cargandoQR">
+                            <div class="skeleton-box" style="width: 100%; height: 400px;"></div>
+                            <p>Un momento por favor cargando QR...</p>
+                        </div>
+
                         <p>Escanea para registrarte</p>
+                        <p>En su lugar digita el codigo <strong>{{eventoSeleccionado.codigo}}</strong></p>
                     </div>
 
                     <!-- Grid horarios y preinscritos -->
@@ -220,7 +235,7 @@
                 </button>
             </div>
             <button class="btn-qr" (click)="toggleQR()"
-                *ngIf="jornadaSeleccionada && eventoSeleccionado.activo && !eventoSeleccionado.cerrado">
+                *ngIf="jornadaSeleccionada && eventoSeleccionado.activo && !eventoSeleccionado.cerrado && eventoSeleccionado.abierto">
                 <span class="material-symbols-outlined">qr_code_2</span>
             </button>
         </footer>

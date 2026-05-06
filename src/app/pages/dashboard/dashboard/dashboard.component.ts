@@ -290,6 +290,14 @@ export class DashboardComponent implements OnInit {
   onScanSuccess(result: string) {
     console.log('QR leído:', result);
 
+    const url = new URL(result);
+
+    const eventoId = url.searchParams.get('e');
+    const jornadaId = url.searchParams.get('j');
+    const ts = url.searchParams.get('ts');
+    const token = url.searchParams.get('tk');
+
+    alert("Leyo el evento " + eventoId + " jornada " + jornadaId + " ts " + ts + " token " + token);
     // detener cámara
     this.usarCamara = false;
 

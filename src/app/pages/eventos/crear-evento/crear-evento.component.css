@@ -84,7 +84,7 @@
 
 .preview-img {
   width: 100%;
-  height: 100%;
+  height: 280px;
   object-fit: contain;
 }
 
@@ -186,9 +186,12 @@
 }
 
 @media (max-width: 800px) {
-  .form-grid {
+  .form-grid, .form-grid-custom {
     grid-template-columns: 1fr;
     gap: 15px;
+  }
+  .full-width {
+    grid-column: span 1;
   }
   .contenido {
     padding: 15px;
@@ -196,5 +199,292 @@
   .formulario-evento {
     margin: 0;
     padding: 15px;
+  }
+  .security-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .schedule-row-custom {
+    flex-wrap: wrap;
+  }
+  .schedule-number {
+    display: none;
+  }
+}
+
+.form-grid-custom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.full-width {
+  grid-column: span 2;
+}
+
+/* Multimedia Area */
+.upload-area-custom {
+  width: 100%;
+  min-height: 180px;
+  max-height: 280px;
+  border: 2px dashed #2f80c3;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: #fcfdfe;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.upload-area-custom:hover {
+  background: #f0f7ff;
+  border-color: #1f5fa8;
+}
+
+.upload-placeholder {
+  text-align: center;
+  padding: 20px;
+}
+
+.upload-placeholder .material-symbols-outlined {
+  font-size: 56px;
+  color: #2f80c3;
+  margin-bottom: 10px;
+}
+
+.upload-placeholder p {
+  margin: 0;
+  font-weight: 500;
+  color: #333;
+}
+
+.upload-placeholder small {
+  color: #888;
+}
+
+/* Jornadas stylization */
+.jornadas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.schedule-row-custom {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: 1px solid #e0e6ed;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  transition: transform 0.2s;
+}
+
+.schedule-row-custom:hover {
+  transform: translateX(5px);
+  border-color: #2f80c3;
+}
+
+.schedule-number {
+  background: #2f80c3;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.btn-remove-custom {
+  background: #fee2e2;
+  color: #ef4444;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-remove-custom:hover {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-add-schedule {
+  background: #f0f7ff;
+  color: #2f80c3;
+  border: 1px dashed #2f80c3;
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-add-schedule:hover {
+  background: #2f80c3;
+  color: white;
+}
+
+/* Seguridad del Evento */
+.form-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 30px 0 20px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+  color: #1f5fa8;
+}
+
+.form-section-title h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.security-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  margin-bottom: 20px;
+}
+
+.checkbox-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Custom Checkbox */
+.checkbox-container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  cursor: pointer;
+  font-size: 15px;
+  color: #444;
+  user-select: none;
+  line-height: 24px;
+}
+
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 24px;
+  width: 24px;
+  background-color: white;
+  border: 2px solid #2f80c3;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.checkbox-container:hover input ~ .checkmark {
+  background-color: #f0f7ff;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+  background-color: #2f80c3;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.checkbox-container .checkmark:after {
+  left: 8px;
+  top: 4px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.conditional-input {
+  padding-left: 35px;
+  animation: fadeIn 0.3s ease;
+}
+
+.conditional-input input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #2f80c3;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  background: white;
+}
+
+.info-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 15px;
+  background: #e3f2fd;
+  border-left: 4px solid #2196f3;
+  border-radius: 4px;
+  margin-left: 35px;
+  animation: fadeIn 0.3s ease;
+}
+
+.info-notice .material-symbols-outlined {
+  font-size: 20px;
+  color: #1976d2;
+}
+
+.info-notice p {
+  margin: 0;
+  font-size: 13px;
+  color: #0d47a1;
+  line-height: 1.4;
+  text-align: left;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

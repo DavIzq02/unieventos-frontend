@@ -59,6 +59,16 @@ export class EventosService {
     return this.http.post<JsonResponse>(rutaEventos, usuario.comunidad)
       .pipe(catchError(err => throwError(() => err)));
   }
+
+  getQrEvento(idEvento: number, idJornada: number): Observable<Blob> {
+    const rutaEventos = `${this.eventosResource}qr/${idEvento}/${idJornada}`;
+
+    return this.http.get(rutaEventos, {
+      responseType: 'blob'
+    }).pipe(
+      catchError(err => throwError(() => err))
+    );
+  }
   /** ************************************************** **/
 
   /** METODOS PARA LA CREACION DE EVENTOS **/
