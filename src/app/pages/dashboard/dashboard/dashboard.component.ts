@@ -295,7 +295,7 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  onScanSuccess(result: string) {
+  async onScanSuccess(result: string) {
     const url = new URL(result);
     console.log("URL: ", url);
     const eventoId = url.href.split('e=')[1].split('&')[0];
@@ -308,7 +308,7 @@ export class DashboardComponent implements OnInit {
     this.asistencia.evento.id = Number(eventoId);
     this.asistencia.jornada.id = Number(jornadaId);
     this.asistencia.usuario.id = Number(JSON.parse(this.usuario!).id);
-    this.registrarAsistencia();
+    await this.registrarAsistencia();
   }
 
   enviarCodigoManual() {
