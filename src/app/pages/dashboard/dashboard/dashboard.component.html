@@ -217,7 +217,7 @@
                 <button class="btn-asistir" *ngIf="esEventoProximo(eventoDetalle) && !jornadaSeleccionada.esInscrito"
                     (click)="inscribirse()">Quiero
                     Asistir</button>
-                <button class="btn-aqui" *ngIf="esEventoActivo(eventoDetalle)" (click)="registrarAsistencia()">Aquí
+                <button class="btn-aqui" *ngIf="esEventoActivo(eventoDetalle)" (click)="abrirOpcionesIngreso()">Aquí
                     estoy</button>
             </div>
         </div>

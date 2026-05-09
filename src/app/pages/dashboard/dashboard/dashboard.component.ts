@@ -320,12 +320,18 @@ export class DashboardComponent implements OnInit {
     this.registrarAsistencia();
   }
 
-  async registrarAsistencia(): Promise<void> {
+  abrirOpcionesIngreso() {
     this.opcionesIngreso = true;
+    this.modoQR = false;
+    this.modoCodigo = false;
+    this.codigoManual = '';
+  }
+
+  async registrarAsistencia(): Promise<void> {
     const respuesta = await firstValueFrom(this.inscripcionesService.createAsistencia(this.asistencia));
     this.asistencia.cargando = false;
-    $("#asistenciaModal").hide();
     if (respuesta.codigo == 200) {
+      this.opcionesIngreso = false;
       Swal.fire({
         title: '¡Asistencia registrada!',
         text: 'Tu asistencia ha sido confirmada.',
@@ -336,6 +342,7 @@ export class DashboardComponent implements OnInit {
       Swal.fire({
         title: '¡Error!',
         text: 'No se pudo registrar tu asistencia.',
+        footer: respuesta.mensaje,
         icon: 'error',
         confirmButtonColor: '#2f80c3'
       });
