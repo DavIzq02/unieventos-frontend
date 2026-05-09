@@ -161,7 +161,7 @@
 
 <!-- DETALLE EVENTO -->
 <div class="modal-overlay" *ngIf="eventoDetalle" (click)="volver()"></div>
-<div class="detalle-ampliado" *ngIf="eventoDetalle">
+<div id="asistenciaModal" class="detalle-ampliado" *ngIf="eventoDetalle">
     <div class="detalle-header">
         <h2>{{ eventoDetalle.nombre }}</h2>
         <button class="btn-close" (click)="volver()">&times;</button>

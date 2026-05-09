@@ -54,6 +54,13 @@ export class DashboardComponent implements OnInit {
 
   usuario: string = '';
 
+  asistencia = {
+    evento: { id: 0 },
+    jornada: { id: 0 },
+    usuario: { id: 0 },
+    leida: false,
+    cargando: false
+  }
   constructor(private eventosService: EventosService, private inscripcionesService: InscripcionesService) { }
 
   ngOnInit(): void {
@@ -136,6 +143,7 @@ export class DashboardComponent implements OnInit {
     this.listaEventosInteres = this.listaEventosInteresOriginal;
     this.listaEventosComunidad = this.listaEventosComunidadOriginal;
   }
+
   filtrarBusqueda() {
     if (this.textoBusqueda == "") {
       this.restablecerListas()
@@ -288,21 +296,18 @@ export class DashboardComponent implements OnInit {
   }
 
   onScanSuccess(result: string) {
-    console.log('QR leído:', result);
-
     const url = new URL(result);
-
-    const eventoId = url.searchParams.get('e');
-    const jornadaId = url.searchParams.get('j');
-    const ts = url.searchParams.get('ts');
-    const token = url.searchParams.get('tk');
-
-    alert("Leyo el evento " + eventoId + " jornada " + jornadaId + " ts " + ts + " token " + token);
-    // detener cámara
+    console.log("URL: ", url);
+    const eventoId = url.href.split('e=')[1].split('&')[0];
+    const jornadaId = url.href.split('j=')[1].split('&')[0];
+    const ts = url.href.split('ts=')[1].split('&')[0];
+    const token = url.href.split('tk=')[1].split('&')[0];
+    this.asistencia.leida = true;
+    this.asistencia.cargando = true;
     this.usarCamara = false;
-
-    // enviar al backend
-    console.log(result)
+    this.asistencia.evento.id = Number(eventoId);
+    this.asistencia.jornada.id = Number(jornadaId);
+    this.asistencia.usuario.id = Number(JSON.parse(this.usuario!).id);
     this.registrarAsistencia();
   }
 
@@ -315,16 +320,26 @@ export class DashboardComponent implements OnInit {
     this.registrarAsistencia();
   }
 
-  registrarAsistencia(): void {
+  async registrarAsistencia(): Promise<void> {
     this.opcionesIngreso = true;
-    // this.eventoDetalle = null;
-    // if (!this.jornadaSeleccionada) return;
-    // Swal.fire({
-    //   title: '¡Asistencia registrada!',
-    //   text: 'Tu asistencia ha sido confirmada.',
-    //   icon: 'success',
-    //   confirmButtonColor: '#2f80c3'
-    // });
-    // this.volver();
+    const respuesta = await firstValueFrom(this.inscripcionesService.createAsistencia(this.asistencia));
+    this.asistencia.cargando = false;
+    $("#asistenciaModal").hide();
+    if (respuesta.codigo == 200) {
+      Swal.fire({
+        title: '¡Asistencia registrada!',
+        text: 'Tu asistencia ha sido confirmada.',
+        icon: 'success',
+        confirmButtonColor: '#2f80c3'
+      });
+    } else {
+      Swal.fire({
+        title: '¡Error!',
+        text: 'No se pudo registrar tu asistencia.',
+        icon: 'error',
+        confirmButtonColor: '#2f80c3'
+      });
+    }
+
   }
 }

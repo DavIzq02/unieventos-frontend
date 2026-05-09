@@ -19,7 +19,7 @@ export class InscripcionesService {
   private jornadasResource = RutaApiService.getPath() + this.raiz + 'jornada-evento/';
   private inscripcionesResource = RutaApiService.getPath() + this.raiz + 'preinscripcion-jornada/';
   private preInscripcionesResource = RutaApiService.getPath() + this.raiz + 'preinscripcion/';
-
+  private asistenciasResource = RutaApiService.getPath() + this.raiz + 'asistencia/';
   constructor(private http: HttpClient) { }
 
   /** METODOS GET DE LOS EVENTOS **/
@@ -53,4 +53,10 @@ export class InscripcionesService {
       .pipe(catchError(err => throwError(() => err)));
   }
 
+
+  createAsistencia(asistencia: any): Observable<JsonResponse> {
+    const rutaEventos = this.asistenciasResource + 'create';
+    return this.http.post<JsonResponse>(rutaEventos, asistencia)
+      .pipe(catchError(err => throwError(() => err)));
+  }
 }
