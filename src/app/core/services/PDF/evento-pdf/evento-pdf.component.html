@@ -1,0 +1,29 @@
+<div id="eventoPDF" *ngIf="evento" class="pdf-container">
+    <div class="pdf-header">
+        <img *ngIf="evento.urlImagenPortada" [src]="evento.urlImagenPortada" [alt]="evento.nombre">
+        <h1 class="pdf-title">{{ evento.nombre }}</h1>
+    </div>
+
+    <div class="pdf-body">
+        <p><strong>Descripción:</strong></p>
+        <p>{{ evento.descripcion }}</p>
+
+        <div *ngIf="jornada" class="pdf-info-box">
+            <p><strong>Jornada Seleccionada:</strong></p>
+            <p>{{ jornada.horaDeInicio }} — {{ jornada.horaDeFinalizacion }}</p>
+        </div>
+
+        <div *ngIf="comunidades && comunidades.length > 0" class="pdf-info-box">
+            <p><strong>Comunidades a las que va dirigido:</strong></p>
+            <ul>
+                <li *ngFor="let c of comunidades">{{ c.nombre }}</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="pdf-qr-section">
+        <h3>QR de Asistencia</h3>
+        <img [src]="qrImage" *ngIf="qrImage" alt="QR Evento">
+        <p>Código manual: <strong>{{ evento.codigo }}</strong></p>
+    </div>
+</div>

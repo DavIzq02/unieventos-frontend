@@ -332,3 +332,13 @@
 .btn-cancelar {
   margin-right: 5px;
 }
+.text-info {
+  color: #2f80c3;
+  font-weight: bold;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  text-align: center;
+  margin-left: 5px;
+  margin-right: 5px;
+  font-size: 20px;
+}

@@ -69,6 +69,63 @@ main {
   border-radius: 10px;
 }
 
+/* Badge de código dinámico */
+.badge-codigo-flotante {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  color: white;
+  border-radius: 12px;
+  font-size: 11px;
+  height: 24px;
+  width: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.badge-codigo-flotante:hover {
+  width: 75px;
+  background: rgba(47, 128, 195, 0.95);
+}
+
+.badge-codigo-flotante .codigo-frente {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  position: absolute;
+  transition: all 0.3s ease;
+  font-family: "Outfit", sans-serif;
+}
+
+.badge-codigo-flotante .codigo-dorso {
+  position: absolute;
+  opacity: 0;
+  font-weight: 700;
+  letter-spacing: 1px;
+  font-size: 13px;
+  transition: all 0.3s ease;
+  transform: translateY(15px);
+  font-family: "Outfit", sans-serif;
+}
+
+.badge-codigo-flotante:hover .codigo-frente {
+  opacity: 0;
+  transform: translateY(-15px);
+}
+
+.badge-codigo-flotante:hover .codigo-dorso {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .evento p {
   font-size: 15px;
   color: #222;

@@ -9,13 +9,17 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { FormsModule } from '@angular/forms';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { AsistenciaComponent } from '../pages/dashboard/asistencia/asistencia.component';
+import { EventoPdfComponent } from '../core/services/PDF/evento-pdf/evento-pdf.component';
 
 @NgModule({
   declarations: [
     HeaderComponent,
     FooterComponent,
     BreadcrumbComponent,
-    SidebarComponent
+    SidebarComponent,
+    AsistenciaComponent,
+    EventoPdfComponent
   ],
   imports: [
     CommonModule,
@@ -32,7 +36,8 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner';
     RouterModule,
     FormsModule,
     AngularMultiSelectModule,
-    ZXingScannerModule
+    ZXingScannerModule,
+    EventoPdfComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

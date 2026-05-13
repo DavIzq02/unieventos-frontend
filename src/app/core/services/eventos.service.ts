@@ -60,8 +60,8 @@ export class EventosService {
       .pipe(catchError(err => throwError(() => err)));
   }
 
-  getQrEvento(idEvento: number, idJornada: number): Observable<Blob> {
-    const rutaEventos = `${this.eventosResource}qr/${idEvento}/${idJornada}`;
+  getQrEvento(idEvento: number, idJornada: number, codigo: any): Observable<Blob> {
+    const rutaEventos = `${this.eventosResource}qr/${idEvento}/${idJornada}/${codigo}`;
 
     return this.http.get(rutaEventos, {
       responseType: 'blob'

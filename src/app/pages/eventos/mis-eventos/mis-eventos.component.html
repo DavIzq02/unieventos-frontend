@@ -55,6 +55,17 @@
                     <span *ngIf="!evento.abierto" style="background-color: rgb(249, 185, 77);" class="badge-activo">
                         Pendiente por abrir
                     </span>
+
+                    <!-- Badge de código flotante -->
+                    <div *ngIf="evento.abierto && evento.codigo" class="badge-codigo-flotante"
+                        (click)="$event.stopPropagation()">
+                        <div class="codigo-frente">
+                            <span class="material-symbols-outlined" style="font-size: 14px;">key</span> Código
+                        </div>
+                        <div class="codigo-dorso">
+                            {{evento.codigo}}
+                        </div>
+                    </div>
                 </div>
 
                 <p [title]="evento.nombre">{{ evento.nombre }}</p>
@@ -188,7 +199,8 @@
                         <div class="modal-section">
                             <h4>Horarios</h4>
                             <ul *ngIf="eventoSeleccionado.listaJornadas" class="modal-list jornada-list">
-                                <li (click)="verPreinscritos(h)" *ngFor="let h of eventoSeleccionado.listaJornadas"
+                                <li (click)="verPreinscritos(h);verAsistencia(h)"
+                                    *ngFor="let h of eventoSeleccionado.listaJornadas"
                                     [class.selected]="jornadaSeleccionada === h">
                                     {{ h.horaDeInicio }} — {{ h.horaDeFinalizacion }}
                                 </li>
@@ -229,16 +241,26 @@
                 <button class="btn-danger" (click)="eliminarEvento()">Eliminar</button>
                 <!-- <button class="btn iniciar" *ngIf="eventoSeleccionado.activo && !eventoSeleccionado.cerrado"
                     (click)="iniciarEvento()">Ver</button> -->
-                <button class="btn btn-excel"
-                    *ngIf="jornadaSeleccionada && (eventoSeleccionado.activo || eventoSeleccionado.cerrado)">
+                <button class="btn btn-excel" (click)="descargarExcel()"
+                    *ngIf="jornadaSeleccionada && (eventoSeleccionado.cerrado || (eventoSeleccionado.activo && eventoSeleccionado.abierto))">
                     <span class="material-symbols-outlined" style="font-size: 18px;">download</span> Exportar Excel
+                </button>
+                <button class="btn btn-excel" (click)="iniciarEvento()"
+                    *ngIf="jornadaSeleccionada && eventoSeleccionado.activo && !eventoSeleccionado.abierto && !eventoSeleccionado.cerrado">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">door_open</span> Abrir Evento
+                </button>
+                <button class="btn ver" (click)="exportarQR()" *ngIf="mostrarQR && !cargandoQR" style="display: flex; align-items: center; gap: 5px;">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">download</span> Exportar QR
                 </button>
             </div>
             <button class="btn-qr" (click)="toggleQR()"
                 *ngIf="jornadaSeleccionada && eventoSeleccionado.activo && !eventoSeleccionado.cerrado && eventoSeleccionado.abierto">
-                <span class="material-symbols-outlined">qr_code_2</span>
+                <span class="material-symbols-outlined" *ngIf="!mostrarQR">qr_code_2</span>
+                <span class="material-symbols-outlined" *ngIf="mostrarQR">close</span>
             </button>
         </footer>
 
     </div>
 </div>
+
+<app-evento-pdf #eventoPdf [evento]="eventoSeleccionado" [qrImage]="urlQrEvento" [jornada]="jornadaSeleccionada" [comunidades]="comunidadesSeleccionadas"></app-evento-pdf>

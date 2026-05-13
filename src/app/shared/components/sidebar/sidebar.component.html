@@ -8,16 +8,16 @@
         <button class="btn-cerrar" type="button" (click)="close()">&times;</button>
     </div>
 
-    <p class="usuario-nombre">{{ usuario.nombre + " " + usuario.apellido }}</p>
+    <p class="usuario-nombre">{{ usuario?.nombre + " " + usuario?.apellido }}</p>
 
     <div class="foto-container">
-        <img [src]="usuario.urlFoto" (error)="onImgError($event)" alt="Foto usuario" class="usuario-foto"
-            *ngIf="usuario.urlFoto != 'not defined'">
-        <span class="material-symbols-outlined" *ngIf="usuario.urlFoto == 'not defined'">account_circle</span>
+        <img [src]="usuario?.urlFoto" (error)="onImgError($event)" alt="Foto usuario" class="usuario-foto"
+            *ngIf="usuario?.urlFoto != 'not defined'">
+        <span class="material-symbols-outlined" *ngIf="usuario?.urlFoto == 'not defined'">account_circle</span>
     </div>
     <a routerLink="/dashboard" (click)="close()">Inicio</a>
     <a routerLink="/gestion/mi-perfil" (click)="close()">Mi perfil</a>
-    <a *ngIf="usuario.rol.id == 1" routerLink="/gestion/usuarios" (click)="close()">Gestionar Cuentas</a>
+    <a *ngIf="usuario?.rol?.id == 1" routerLink="/gestion/usuarios" (click)="close()">Gestionar Cuentas</a>
     <a routerLink="/eventos/mis-eventos" (click)="close()">Ver mis eventos</a>
     <a href="#" (click)="close()">Guardados</a>
     <a href="#" (click)="close()">Reseñas</a>

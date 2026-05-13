@@ -1,8 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
+import { AsistenciaComponent } from './pages/dashboard/asistencia/asistencia.component';
 
 const routes: Routes = [
+  {
+    path: 'asistencia',
+    component: AsistenciaComponent
+  },
   {
     path: '',
     loadChildren: () =>

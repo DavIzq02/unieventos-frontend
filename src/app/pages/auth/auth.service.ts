@@ -73,6 +73,11 @@ export class AuthService {
       .pipe(catchError(err => throwError(() => err)));
   }
 
+  crearUsuarioInvitado(usuario: any): Observable<JsonResponse> {
+    const rutaUsuario = this.usuarioResource + 'create';
+    return this.http.post<JsonResponse>(rutaUsuario, usuario)
+      .pipe(catchError(err => throwError(() => err)));
+  }
 
   guardarUsuario(usuario: any) {
     localStorage.setItem('usuario', JSON.stringify(usuario));

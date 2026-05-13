@@ -1,0 +1,87 @@
+<div class="asistencia-container">
+    <div class="card-asistencia">
+
+        <div class="header-evento" *ngIf="eventoDetalle">
+            <h2 class="title-evento">{{ eventoDetalle.nombre }}</h2>
+        </div>
+
+        <div class="body-asistencia">
+            <div class="info-evento" *ngIf="eventoDetalle">
+                <div class="img-box" [class.sin-imagen]="!eventoDetalle.urlImagenPortada">
+                    <ng-container *ngIf="eventoDetalle.urlImagenPortada; else sinImagen">
+                        <img [src]="eventoDetalle.urlImagenPortada" [alt]="eventoDetalle.nombre">
+                    </ng-container>
+                    <ng-template #sinImagen>
+                        <div class="placeholder">
+                            <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="Sin imagen">
+                            <span>Sin imagen</span>
+                        </div>
+                    </ng-template>
+                </div>
+
+                <div class="detalles-box">
+                    <p class="desc">{{ eventoDetalle.descripcion }}</p>
+                    <div class="jornada-info" *ngIf="jornadaSeleccionada">
+                        <strong>Jornada de Asistencia:</strong>
+                        <p>{{ jornadaSeleccionada.horaDeInicio }} — {{ jornadaSeleccionada.horaDeFinalizacion }}</p>
+                    </div>
+
+                    <div class="comunidades-info" *ngIf="listaComunidadesEvento && listaComunidadesEvento.length > 0">
+                        <strong>Comunidades Invitadas:</strong>
+                        <ul>
+                            <li *ngFor="let com of listaComunidadesEvento">{{ com.nombre }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-registro" *ngIf="!estaLogueado && !cargandoDatos">
+                <h3>Regístrate para confirmar tu asistencia</h3>
+                <form (ngSubmit)="submitRegistro()">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" [(ngModel)]="DataNuevoUsuario.nombre" name="nombre" placeholder="Tu nombre"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label>Apellido</label>
+                        <input type="text" [(ngModel)]="DataNuevoUsuario.apellido" name="apellido"
+                            placeholder="Tu apellido" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Correo</label>
+                        <input type="email" [(ngModel)]="DataNuevoUsuario.correo" name="correo"
+                            placeholder="ejemplo@unimagdalena.edu.co" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Documento / Código</label>
+                        <input type="text" [(ngModel)]="DataNuevoUsuario.codigo" name="codigo"
+                            placeholder="Tu número de documento" required>
+                    </div>
+                    <div class="form-group" *ngIf="listaComunidadesEvento && listaComunidadesEvento.length > 0">
+                        <label for="comunidad">Comunidad</label>
+                        <select class="select-comunidad" id="comunidad" name="comunidad"
+                            [(ngModel)]="DataNuevoUsuario.comunidad.id" required>
+                            <option *ngFor="let com of listaComunidadesEvento" [value]="com.id">{{ com.nombre }}
+                            </option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-asistir" [disabled]="procesando">
+                        <span *ngIf="!procesando">Registrar Asistencia</span>
+                        <span *ngIf="procesando">Procesando...</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="loader-box" *ngIf="cargandoDatos || procesando && estaLogueado">
+                <div class="spinner"></div>
+                <p>Registrando asistencia automáticamente...</p>
+            </div>
+
+            <div class="loader-box" *ngIf="procesando && !estaLogueado">
+                <div class="spinner"></div>
+                <p>Creando usuario y registrando asistencia...</p>
+            </div>
+        </div>
+    </div>
+</div>

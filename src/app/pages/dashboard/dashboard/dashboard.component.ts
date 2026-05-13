@@ -55,7 +55,7 @@ export class DashboardComponent implements OnInit {
   usuario: string = '';
 
   asistencia = {
-    evento: { id: 0 },
+    evento: { id: 0, codigo: '' },
     jornada: { id: 0 },
     usuario: { id: 0 },
     leida: false,
@@ -65,12 +65,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.usuario = localStorage.getItem('usuario') || 'Usuario';
-    this.getEventosActuales();
-    this.getProximosEventos();
-    this.getEventosInteres();
-    this.getEventosComunidad();
-    this.getTipoEventos();
-    //this.getEventosAsistidos();
+    this.restablecerVistas();
   }
 
   getTipoEventos() {
@@ -97,6 +92,14 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  restablecerVistas() {
+    this.getEventosActuales();
+    this.getProximosEventos();
+    this.getEventosInteres();
+    this.getEventosComunidad();
+    this.getTipoEventos();
+    //this.getEventosAsistidos();
+  }
   getProximosEventos() {
     this.listaEventosProximos = [];
     this.eventosService.getProximosEventos().subscribe((res: any) => {
@@ -256,11 +259,18 @@ export class DashboardComponent implements OnInit {
   }
 
   esEventoProximo(evento: Evento): boolean {
+    console.log("Fecha de apertura: ", evento.fechaDeApertura);
     if (!evento.fechaDeApertura) return false;
     const ahora = new Date();
+    console.log("Es evento proximo ", new Date(evento.fechaDeApertura) > ahora);
     return new Date(evento.fechaDeApertura) > ahora;
   }
 
+  esEventoCerrado(evento: Evento): boolean {
+    if (!evento.fechaDeFinalizacion) return false;
+    const ahora = new Date();
+    return new Date(evento.fechaDeFinalizacion) < ahora;
+  }
   async inscribirse(): Promise<void> {
     if (!this.jornadaSeleccionada) return;
     const preinscripcion = {
@@ -290,6 +300,7 @@ export class DashboardComponent implements OnInit {
           confirmButtonColor: '#2f80c3'
         });
         this.volver();
+        this.restablecerVistas();
       }
 
     }
@@ -302,10 +313,12 @@ export class DashboardComponent implements OnInit {
     const jornadaId = url.href.split('j=')[1].split('&')[0];
     const ts = url.href.split('ts=')[1].split('&')[0];
     const token = url.href.split('tk=')[1].split('&')[0];
+    const codigo = url.href.split('c=')[1].split('&')[0];
     this.asistencia.leida = true;
     this.asistencia.cargando = true;
     this.usarCamara = false;
     this.asistencia.evento.id = Number(eventoId);
+    this.asistencia.evento.codigo = codigo;
     this.asistencia.jornada.id = Number(jornadaId);
     this.asistencia.usuario.id = Number(JSON.parse(this.usuario!).id);
     await this.registrarAsistencia();
@@ -316,6 +329,10 @@ export class DashboardComponent implements OnInit {
       console.warn('Código vacío');
       return;
     }
+    this.asistencia.evento.id = Number(this.eventoDetalle!.id);
+    this.asistencia.evento.codigo = this.codigoManual;
+    this.asistencia.jornada.id = Number(this.jornadaSeleccionada!.id);
+    this.asistencia.usuario.id = Number(JSON.parse(this.usuario!).id);
 
     this.registrarAsistencia();
   }
@@ -330,8 +347,9 @@ export class DashboardComponent implements OnInit {
   async registrarAsistencia(): Promise<void> {
     const respuesta = await firstValueFrom(this.inscripcionesService.createAsistencia(this.asistencia));
     this.asistencia.cargando = false;
+    this.opcionesIngreso = false;
+    this.volver();
     if (respuesta.codigo == 200) {
-      this.opcionesIngreso = false;
       Swal.fire({
         title: '¡Asistencia registrada!',
         text: 'Tu asistencia ha sido confirmada.',
@@ -348,5 +366,14 @@ export class DashboardComponent implements OnInit {
       });
     }
 
+  }
+
+  anularInscripcion() {
+    Swal.fire({
+      title: 'Funcionalidad en desarrollo',
+      text: 'Aún no se encuentra activa la anulación de la inscripción',
+      icon: 'info',
+      confirmButtonColor: '#2f80c3'
+    })
   }
 }

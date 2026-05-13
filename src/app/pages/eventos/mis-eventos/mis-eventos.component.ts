@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MyEvento } from 'src/app/shared/models/my-evento.model';
 import { EventosService } from '../../../core/services/eventos.service';
@@ -7,6 +7,8 @@ import Swal from 'sweetalert2';
 import { Evento } from 'src/app/shared/models/evento.model';
 import { firstValueFrom } from 'rxjs';
 import { InscripcionesService } from 'src/app/core/services/inscripciones.service';
+import { ExcelReportService } from 'src/app/core/services/excel-report.service';
+import { EventoPdfComponent } from '../../../core/services/PDF/evento-pdf/evento-pdf.component';
 
 @Component({
   selector: 'app-mis-eventos',
@@ -37,6 +39,7 @@ export class MisEventosComponent implements OnInit {
 
   eventoSeleccionado: Evento | null = null;
   jornadaSeleccionada: any = null;
+  comunidadesSeleccionadas: any[] = [];
   modalAbierto = false;
   mostrarQR = false;
   cargandoQR = true;
@@ -45,10 +48,13 @@ export class MisEventosComponent implements OnInit {
   textoBusqueda: any;
   listaTipoEventos: any[] = [];
 
+  @ViewChild('eventoPdf') eventoPdfComponent!: EventoPdfComponent;
+
   constructor(
     private eventosService: EventosService,
     private inscripcionesService: InscripcionesService,
-    private router: Router
+    private router: Router,
+    private excelReportService: ExcelReportService
   ) { }
 
   ngOnInit(): void {
@@ -102,6 +108,7 @@ export class MisEventosComponent implements OnInit {
   async abrirModal(evento: Evento): Promise<void> {
     this.eventoSeleccionado = evento;
     this.jornadaSeleccionada = null;
+    this.comunidadesSeleccionadas = [];
     console.log("Id de evento", this.eventoSeleccionado.id)
     const eventoBuscar = {
       id: this.eventoSeleccionado.id,
@@ -109,6 +116,15 @@ export class MisEventosComponent implements OnInit {
     }
     const jornadas = await firstValueFrom(this.eventosService.getJornadasByEvento(eventoBuscar));
     this.eventoSeleccionado.listaJornadas = jornadas.listaRespuesta;
+    
+    try {
+      const comun: any = await firstValueFrom(this.eventosService.getComunidadesSeleccionadasByEvento(this.eventoSeleccionado.id));
+      this.comunidadesSeleccionadas = comun.listaRespuesta || [];
+    } catch (error) {
+      console.log('Error al obtener comunidades', error);
+      this.comunidadesSeleccionadas = [];
+    }
+
     this.modalAbierto = true;
     this.mostrarQR = false;
   }
@@ -132,6 +148,25 @@ export class MisEventosComponent implements OnInit {
     }
   }
 
+  async verAsistencia(jornada: any) {
+    this.jornadaSeleccionada = jornada;
+    console.log("Jornada: ", this.jornadaSeleccionada)
+    const resp: any = await firstValueFrom(this.inscripcionesService.getAsistenciasByJornada(this.jornadaSeleccionada));
+    if (resp.codigo == 200) {
+      this.jornadaSeleccionada.asistentes = resp.listaRespuesta;
+      console.log("asistentes: ", this.jornadaSeleccionada.asistentes)
+    } else if (resp.codigo == 404) {
+      this.jornadaSeleccionada.asistentes = [];
+    } else {
+      Swal.fire({
+        title: 'Error al obtener la asistencia',
+        text: resp.mensaje,
+        icon: 'error',
+        confirmButtonColor: '#1f5fa8'
+      });
+    }
+  }
+
   cerrarModal(): void {
     this.modalAbierto = false;
     this.eventoSeleccionado = null;
@@ -143,8 +178,10 @@ export class MisEventosComponent implements OnInit {
     this.mostrarQR = !this.mostrarQR;
     this.cargandoQR = true;
     this.urlQrEvento = '';
+
     const idEvento = this.eventoSeleccionado?.id || 0;
-    this.eventosService.getQrEvento(idEvento, this.jornadaSeleccionada.id).subscribe((imagen: any) => {
+    const codigoEvento = this.eventoSeleccionado?.codigo || "";
+    this.eventosService.getQrEvento(idEvento, this.jornadaSeleccionada.id, codigoEvento).subscribe((imagen: any) => {
       this.urlQrEvento = URL.createObjectURL(imagen);
       console.log("QR del evento: ", imagen)
     });
@@ -216,5 +253,25 @@ export class MisEventosComponent implements OnInit {
 
   irCrearEvento(): void {
     this.router.navigate(['/eventos/crear-evento']);
+  }
+
+  descargarExcel() {
+    console.log("Evento: ", this.eventoSeleccionado);
+    const eventoEnviar: any = {
+      // id: this.eventoSeleccionado?.id,
+      nombre: this.eventoSeleccionado?.nombre,
+      descripcion: this.eventoSeleccionado?.descripcion,
+      horaDeInicio: this.jornadaSeleccionada.horaDeInicio,
+      horaDeFinalizacion: this.jornadaSeleccionada.horaDeFinalizacion,
+      codigo: this.eventoSeleccionado?.codigo,
+
+    };
+    this.excelReportService.exportarExcelPrueba(eventoEnviar, this.jornadaSeleccionada.asistentes);
+  }
+
+  exportarQR(): void {
+    if (this.eventoPdfComponent) {
+      this.eventoPdfComponent.descargarPDF();
+    }
   }
 }

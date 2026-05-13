@@ -187,6 +187,8 @@
         <div class="detalle-der">
             <p class="tipo-evento"><strong>Tipo:</strong> {{ eventoDetalle.nombreTipoEvento }}</p>
             <p class="desc">{{ eventoDetalle.descripcion }}</p>
+            <p class="desc"><strong>Fecha de apertura:</strong> {{ eventoDetalle.fechaDeApertura }}</p>
+            <p class="desc"><strong>Fecha de cierre:</strong> {{ eventoDetalle.fechaDeFinalizacion }}</p>
 
             <div class="comunidades" *ngIf="listaComunidadesEvento && listaComunidadesEvento.length > 0">
                 <strong>Comunidades:</strong>
@@ -195,7 +197,7 @@
                 </ul>
             </div>
 
-            <div class="jornadas-section">
+            <div class="jornadas-section" *ngIf="!esEventoCerrado(eventoDetalle)">
                 <strong>Jornadas:</strong>
                 <ul class="lista-jornadas"
                     *ngIf="eventoDetalle.listaJornadas && eventoDetalle.listaJornadas.length > 0; else noJornadas">
@@ -208,17 +210,19 @@
                     <p class="text-muted">No hay jornadas registradas</p>
                 </ng-template>
             </div>
-
+            <div *ngIf="esEventoCerrado(eventoDetalle)">
+                <p class="text-info">Este evento ya finalizó</p>
+            </div>
             <div class="acciones-jornada" *ngIf="jornadaSeleccionada">
                 <button class="btn-cancelar" *ngIf="esEventoProximo(eventoDetalle) && jornadaSeleccionada.esInscrito"
-                    (click)="inscribirse()">
-                    No puedo asistir</button>
+                    (click)="anularInscripcion()">
+                    No puedo asistir
+                </button>
 
                 <button class="btn-asistir" *ngIf="esEventoProximo(eventoDetalle) && !jornadaSeleccionada.esInscrito"
-                    (click)="inscribirse()">Quiero
-                    Asistir</button>
-                <button class="btn-aqui" *ngIf="esEventoActivo(eventoDetalle)" (click)="abrirOpcionesIngreso()">Aquí
-                    estoy</button>
+                    (click)="inscribirse()">Quiero Asistir</button>
+                <button class="btn-aqui" *ngIf="esEventoActivo(eventoDetalle)" (click)="abrirOpcionesIngreso()">
+                    Aquí estoy</button>
             </div>
         </div>
     </div>

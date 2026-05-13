@@ -54,9 +54,16 @@ export class InscripcionesService {
   }
 
 
+  /** METODOS DE ASISTENCIA DE EVENTOS**/
   createAsistencia(asistencia: any): Observable<JsonResponse> {
     const rutaEventos = this.asistenciasResource + 'create';
     return this.http.post<JsonResponse>(rutaEventos, asistencia)
+      .pipe(catchError(err => throwError(() => err)));
+  }
+
+  getAsistenciasByJornada(jornada: any): Observable<JsonResponse> {
+    const rutaAsistencia = this.asistenciasResource + 'listarByJornada';
+    return this.http.post<JsonResponse>(rutaAsistencia, jornada)
       .pipe(catchError(err => throwError(() => err)));
   }
 }
