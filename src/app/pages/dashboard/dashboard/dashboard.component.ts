@@ -98,7 +98,19 @@ export class DashboardComponent implements OnInit {
     this.getEventosInteres();
     this.getEventosComunidad();
     this.getTipoEventos();
-    //this.getEventosAsistidos();
+    this.getEventosAsistidos();
+  }
+  getEventosAsistidos() {
+    this.listaEventosAsistidos = [];
+    this.eventosService.getEventosAsistidos().subscribe((res: any) => {
+      if (res.codigo == 200) {
+        this.listaEventosAsistidos = res.listaRespuesta;
+        this.listaEventosAsistidosOriginal = res.listaRespuesta;
+      } else {
+        this.listaEventosAsistidos = [];
+        this.listaEventosAsistidosOriginal = [];
+      }
+    });
   }
   getProximosEventos() {
     this.listaEventosProximos = [];
@@ -145,6 +157,7 @@ export class DashboardComponent implements OnInit {
     this.listaEventosProximos = this.listaEventosProximosOriginal;
     this.listaEventosInteres = this.listaEventosInteresOriginal;
     this.listaEventosComunidad = this.listaEventosComunidadOriginal;
+    this.listaEventosAsistidos = this.listaEventosAsistidosOriginal;
   }
 
   filtrarBusqueda() {
@@ -182,6 +195,9 @@ export class DashboardComponent implements OnInit {
       return evento.nombreTipoEvento == this.categoriaSeleccionada;
     });
     this.listaEventosComunidad = this.listaEventosComunidadOriginal.filter((evento: Evento) => {
+      return evento.nombreTipoEvento == this.categoriaSeleccionada;
+    });
+    this.listaEventosAsistidos = this.listaEventosAsistidosOriginal.filter((evento: Evento) => {
       return evento.nombreTipoEvento == this.categoriaSeleccionada;
     });
   }

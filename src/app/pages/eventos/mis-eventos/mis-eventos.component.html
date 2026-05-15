@@ -249,7 +249,12 @@
                     *ngIf="jornadaSeleccionada && eventoSeleccionado.activo && !eventoSeleccionado.abierto && !eventoSeleccionado.cerrado">
                     <span class="material-symbols-outlined" style="font-size: 18px;">door_open</span> Abrir Evento
                 </button>
-                <button class="btn ver" (click)="exportarQR()" *ngIf="mostrarQR && !cargandoQR" style="display: flex; align-items: center; gap: 5px;">
+                <button class="btn btn-excel" (click)="cerrarEvento()"
+                    *ngIf="jornadaSeleccionada && eventoSeleccionado.activo && eventoSeleccionado.abierto && !eventoSeleccionado.cerrado">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">close</span> Cerrar Evento
+                </button>
+                <button class="btn ver" (click)="exportarQR()" *ngIf="mostrarQR && !cargandoQR"
+                    style="display: flex; align-items: center; gap: 5px;">
                     <span class="material-symbols-outlined" style="font-size: 18px;">download</span> Exportar QR
                 </button>
             </div>
@@ -263,4 +268,5 @@
     </div>
 </div>
 
-<app-evento-pdf #eventoPdf [evento]="eventoSeleccionado" [qrImage]="urlQrEvento" [jornada]="jornadaSeleccionada" [comunidades]="comunidadesSeleccionadas"></app-evento-pdf>
+<app-evento-pdf #eventoPdf [evento]="eventoSeleccionado" [qrImage]="urlQrEvento" [jornada]="jornadaSeleccionada"
+    [comunidades]="comunidadesSeleccionadas"></app-evento-pdf>

@@ -74,7 +74,7 @@ export class MisEventosComponent implements OnInit {
       this.listaEventos = res.listaRespuesta;
       for (const evento of this.listaEventos) {
         evento.activo = new Date(evento.fechaDeApertura) <= new Date() && new Date(evento.fechaDeFinalizacion) >= new Date();
-        evento.cerrado = new Date(evento.fechaDeFinalizacion) < new Date();
+        evento.cerrado = new Date(evento.fechaDeFinalizacion) < new Date() || evento.abierto == false;
       }
       this.listaEventosOriginal = this.listaEventos;
     });
@@ -116,7 +116,7 @@ export class MisEventosComponent implements OnInit {
     }
     const jornadas = await firstValueFrom(this.eventosService.getJornadasByEvento(eventoBuscar));
     this.eventoSeleccionado.listaJornadas = jornadas.listaRespuesta;
-    
+
     try {
       const comun: any = await firstValueFrom(this.eventosService.getComunidadesSeleccionadasByEvento(this.eventoSeleccionado.id));
       this.comunidadesSeleccionadas = comun.listaRespuesta || [];
@@ -188,17 +188,48 @@ export class MisEventosComponent implements OnInit {
     this.cargandoQR = false;
   }
 
-  iniciarEvento(): void {
+  async iniciarEvento(): Promise<void> {
     if (!this.eventoSeleccionado) return;
-    //this.eventosService.iniciarEvento(this.eventoSeleccionado.id);
+    const resp: any = await firstValueFrom(this.eventosService.iniciarEvento(this.eventoSeleccionado.id));
     this.cerrarModal();
-    Swal.fire({
-      title: '¡Evento iniciado!',
-      text: `${this.eventoSeleccionado?.nombre} está ahora activo`,
-      icon: 'success',
-      confirmButtonColor: '#1f5fa8'
-    });
-    this.cargarEventos();
+    if (resp.codigo == 200) {
+      Swal.fire({
+        title: '¡Evento iniciado!',
+        text: `El evento está ahora activo`,
+        icon: 'success',
+        confirmButtonColor: '#1f5fa8'
+      });
+      this.cargarEventos();
+    } else {
+      Swal.fire({
+        title: 'Error al iniciar el evento',
+        text: resp.mensaje,
+        icon: 'error',
+        confirmButtonColor: '#1f5fa8'
+      });
+    }
+  }
+
+  async cerrarEvento(): Promise<void> {
+    if (!this.eventoSeleccionado) return;
+    const resp: any = await firstValueFrom(this.eventosService.finalizarEvento(this.eventoSeleccionado.id));
+    this.cerrarModal();
+    if (resp.codigo == 200) {
+      Swal.fire({
+        title: '¡Evento cerrado!',
+        text: `El evento está ahora cerrado`,
+        icon: 'success',
+        confirmButtonColor: '#1f5fa8'
+      });
+      this.cargarEventos();
+    } else {
+      Swal.fire({
+        title: 'Error al iniciar el evento',
+        text: resp.mensaje,
+        icon: 'error',
+        confirmButtonColor: '#1f5fa8'
+      });
+    }
   }
 
   eliminarEvento(): void {

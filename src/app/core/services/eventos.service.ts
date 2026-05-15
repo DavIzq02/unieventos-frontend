@@ -24,6 +24,8 @@ export class EventosService {
   private eventosInteresResource = RutaApiService.getPath() + this.raiz + 'interes-usuario/';
   private comunidadResource = RutaApiService.getPath() + this.raiz + 'comunidad/';
   private jornadasResource = RutaApiService.getPath() + this.raiz + 'jornada-evento/';
+  private asistenciasResource = RutaApiService.getPath() + this.raiz + 'asistencia/';
+
   constructor(private http: HttpClient) { }
 
   /** METODOS GET DE LOS EVENTOS **/
@@ -49,6 +51,13 @@ export class EventosService {
   getEventosByUsuario(): Observable<JsonResponse> {
     const usuario: any = JSON.parse(localStorage.getItem('usuario')!);
     const rutaEventos = this.eventosResource + 'listarByUsuario';
+    return this.http.post<JsonResponse>(rutaEventos, usuario)
+      .pipe(catchError(err => throwError(() => err)));
+  }
+
+  getEventosAsistidos(): Observable<JsonResponse> {
+    const usuario: any = JSON.parse(localStorage.getItem('usuario')!);
+    const rutaEventos = this.asistenciasResource + 'findAsistenciaByUsuario';
     return this.http.post<JsonResponse>(rutaEventos, usuario)
       .pipe(catchError(err => throwError(() => err)));
   }
@@ -173,4 +182,15 @@ export class EventosService {
       .pipe(catchError(err => throwError(() => err)));
   }
 
+  iniciarEvento(id: number): Observable<JsonResponse> {
+    const ruta = `${this.eventosResource}iniciar/${id}`;
+    return this.http.put<JsonResponse>(ruta, [])
+      .pipe(catchError(err => throwError(() => err)));
+  }
+
+  finalizarEvento(id: number): Observable<JsonResponse> {
+    const ruta = `${this.eventosResource}cerrar/${id}`;
+    return this.http.put<JsonResponse>(ruta, [])
+      .pipe(catchError(err => throwError(() => err)));
+  }
 }
