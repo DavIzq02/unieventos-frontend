@@ -257,6 +257,9 @@
                     style="display: flex; align-items: center; gap: 5px;">
                     <span class="material-symbols-outlined" style="font-size: 18px;">download</span> Exportar QR
                 </button>
+                <button class="btn btn-resenas-link" (click)="irAResenas(eventoSeleccionado.id)">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">reviews</span> Ver Reseñas
+                </button>
             </div>
             <button class="btn-qr" (click)="toggleQR()"
                 *ngIf="jornadaSeleccionada && eventoSeleccionado.activo && !eventoSeleccionado.cerrado && eventoSeleccionado.abierto">

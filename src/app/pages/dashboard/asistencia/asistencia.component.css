@@ -210,6 +210,30 @@
   }
 }
 
+.btn-resenas-link {
+    background: #e8f0fb; 
+    color: #1f5fa8; 
+    border: 1.5px solid #1f5fa8; 
+    border-radius: 8px; 
+    padding: 8px 15px; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    width: 100%; 
+    justify-content: center; 
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-resenas-link:hover {
+    background: #1e293b !important;
+    color: #ffffff !important;
+    border-color: #1e293b !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 @media (max-width: 768px) {
   .body-asistencia {
     flex-direction: column;

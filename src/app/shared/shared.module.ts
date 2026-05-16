@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { AsistenciaComponent } from '../pages/dashboard/asistencia/asistencia.component';
 import { EventoPdfComponent } from '../core/services/PDF/evento-pdf/evento-pdf.component';
+import { ResenasConImagenPipe } from './pipes/resenas-con-imagen.pipe';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { EventoPdfComponent } from '../core/services/PDF/evento-pdf/evento-pdf.c
     BreadcrumbComponent,
     SidebarComponent,
     AsistenciaComponent,
-    EventoPdfComponent
+    EventoPdfComponent,
+    ResenasConImagenPipe
   ],
   imports: [
     CommonModule,
@@ -37,7 +39,8 @@ import { EventoPdfComponent } from '../core/services/PDF/evento-pdf/evento-pdf.c
     FormsModule,
     AngularMultiSelectModule,
     ZXingScannerModule,
-    EventoPdfComponent
+    EventoPdfComponent,
+    ResenasConImagenPipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

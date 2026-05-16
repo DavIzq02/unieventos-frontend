@@ -15,7 +15,7 @@
         <h2>Eventos actuales</h2>
         <div class="eventos" *ngIf="eventosActuales.length > 0">
             <div class="card" *ngFor="let evento of eventosActuales" (click)="verDetalle(evento)">
-                <img [src]="evento.img" [alt]="evento.nombre">
+                <img [src]="evento.urlImagenPortada" [alt]="evento.nombre">
                 <p>{{ evento.nombre }}</p>
             </div>
         </div>
@@ -28,7 +28,7 @@
         <h2>Próximos eventos</h2>
         <div class="eventos" *ngIf="proximosEventos.length > 0">
             <div class="card" *ngFor="let evento of proximosEventos" (click)="verDetalle(evento)">
-                <img [src]="evento.img" [alt]="evento.nombre">
+                <img [src]="evento.urlImagenPortada" [alt]="evento.nombre">
                 <p>{{ evento.nombre }}</p>
             </div>
         </div>
@@ -50,7 +50,7 @@
 <!-- Detalle evento -->
 <div class="detalle" *ngIf="eventoDetalle">
     <h2>{{ eventoDetalle.nombre }}</h2>
-    <img [src]="eventoDetalle.img" [alt]="eventoDetalle.nombre">
+    <img [src]="eventoDetalle.urlImagenPortada" [alt]="eventoDetalle.nombre">
     <p>{{ eventoDetalle.descripcion }}</p>
     <button (click)="volver()">Volver</button>
 </div>

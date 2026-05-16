@@ -19,8 +19,8 @@
     <a routerLink="/gestion/mi-perfil" (click)="close()">Mi perfil</a>
     <a *ngIf="usuario?.rol?.id == 1" routerLink="/gestion/usuarios" (click)="close()">Gestionar Cuentas</a>
     <a routerLink="/eventos/mis-eventos" (click)="close()">Ver mis eventos</a>
-    <a href="#" (click)="close()">Guardados</a>
-    <a href="#" (click)="close()">Reseñas</a>
+    <!-- <a href="#" (click)="close()">Guardados</a> -->
+    <a routerLink="/eventos/resenas" (click)="close()">Reseñas</a>
     <a class="link-cerrar-sesion" (click)="cerrarSesion()">Cerrar sesión</a>
 
 </aside>

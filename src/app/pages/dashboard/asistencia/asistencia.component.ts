@@ -39,8 +39,8 @@ export class AsistenciaComponent implements OnInit {
   comunidadPorDefecto: any = null;
 
   constructor(
-    private route: ActivatedRoute,
     private router: Router,
+    private route: ActivatedRoute,
     private authService: AuthService,
     private eventosService: EventosService,
     private inscripcionesService: InscripcionesService
@@ -211,5 +211,9 @@ export class AsistenciaComponent implements OnInit {
     } finally {
       this.procesando = false;
     }
+  }
+
+  irAResenas(idEvento: number) {
+    this.router.navigate(['/eventos/resenas', idEvento]);
   }
 }

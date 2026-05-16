@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Evento } from 'src/app/shared/models/evento.model';
 import { EventosService } from '../../../core/services/eventos.service';
 import { BreadcrumbItem } from '../../../shared/models/breadcrumb-item.model';
@@ -6,6 +7,7 @@ import { DashboardService } from '../dashboard.service';
 import { firstValueFrom } from 'rxjs';
 import Swal from 'sweetalert2';
 import { InscripcionesService } from 'src/app/core/services/inscripciones.service';
+import { ResenasService } from 'src/app/core/services/resenas.service';
 
 declare const $: any;
 @Component({
@@ -61,7 +63,27 @@ export class DashboardComponent implements OnInit {
     leida: false,
     cargando: false
   }
-  constructor(private eventosService: EventosService, private inscripcionesService: InscripcionesService) { }
+
+  // Variables para reseñas
+  mostrarModalResena: boolean = false;
+  eventoParaResena: Evento | null = null;
+  resenaNueva = {
+    descripcion: '',
+    titulo: '',
+    calificacion: 0,
+    usuario: { id: 0 },
+    evento: { id: 0 },
+    asistencia: { id: 0 }
+  };
+  fotoResena: File | null = null;
+  previewFoto: string | null = null;
+
+  constructor(
+    private router: Router,
+    private eventosService: EventosService,
+    private inscripcionesService: InscripcionesService,
+    private resenasService: ResenasService
+  ) { }
 
   ngOnInit(): void {
     this.usuario = localStorage.getItem('usuario') || 'Usuario';
@@ -391,5 +413,85 @@ export class DashboardComponent implements OnInit {
       icon: 'info',
       confirmButtonColor: '#2f80c3'
     })
+  }
+
+  // Métodos para reseñas
+  abrirModalResena(evento: Evento, event: MouseEvent) {
+    event.stopPropagation();
+    this.eventoParaResena = evento;
+    const idAsistencia = evento.idAsistencia || 0;
+    this.resenaNueva = {
+      titulo: '',
+      descripcion: '',
+      calificacion: 0,
+      usuario: { id: JSON.parse(this.usuario!).id },
+      evento: { id: evento.id },
+      asistencia: { id: idAsistencia }
+    };
+    this.fotoResena = null;
+    this.previewFoto = null;
+    this.mostrarModalResena = true;
+  }
+
+  cerrarModalResena() {
+    this.mostrarModalResena = false;
+    this.eventoParaResena = null;
+  }
+
+  seleccionarCalificacion(rating: number) {
+    this.resenaNueva.calificacion = rating;
+  }
+
+  onFotoSeleccionada(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.fotoResena = file;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewFoto = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  async guardarResena() {
+    if (this.resenaNueva.calificacion === 0) {
+      Swal.fire('Atención', 'Por favor selecciona una calificación', 'warning');
+      return;
+    }
+    if (!this.resenaNueva.descripcion.trim()) {
+      Swal.fire('Atención', 'Por favor escribe un comentario', 'warning');
+      return;
+    }
+
+    try {
+      Swal.showLoading();
+      const respResena: any = await firstValueFrom(this.resenasService.crearResena(this.resenaNueva));
+
+      if (respResena.codigo === 200 || respResena.codigo === 201) {
+        const idResena = respResena.data.id;
+
+        if (this.fotoResena) {
+          await firstValueFrom(this.resenasService.subirMultimediaResena(idResena, this.fotoResena));
+        }
+
+        Swal.fire({
+          title: '¡Reseña guardada!',
+          text: 'Gracias por compartir tu opinión',
+          icon: 'success',
+          confirmButtonColor: '#2f80c3'
+        });
+        this.cerrarModalResena();
+      } else {
+        Swal.fire('Error', respResena.mensaje, 'error');
+      }
+    } catch (error) {
+      console.error('Error al guardar reseña', error);
+      Swal.fire('Error', 'No se pudo guardar la reseña', 'error');
+    }
+  }
+
+  irAResenas(idEvento: number) {
+    this.router.navigate(['/eventos/resenas', idEvento]);
   }
 }

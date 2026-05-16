@@ -11,6 +11,7 @@ export interface Evento {
     cerrado?: boolean;
     listaJornadas?: any[];
     codigo?: string;
+    idAsistencia?: number;
     horaDeInicio?: any;
     horaDeFinalizacion?: any;
 }

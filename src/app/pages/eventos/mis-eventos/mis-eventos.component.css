@@ -472,6 +472,29 @@ main {
   background-color: #1a965f;
 }
 
+.btn-resenas-link {
+    background: #e8f0fb; 
+    color: #1f5fa8; 
+    border: 1.5px solid #1f5fa8; 
+    display: flex; 
+    align-items: center; 
+    gap: 8px;
+    padding: 6px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-resenas-link:hover {
+    background: #1e293b !important;
+    color: #ffffff !important;
+    border-color: #1e293b !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 /* Responsive */
 @media (max-width: 650px) {
   .modal-inner {

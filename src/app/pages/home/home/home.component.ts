@@ -34,16 +34,16 @@ export class HomeComponent implements OnInit {
   }
 
   filtrar(): void {
-    this.eventosActuales = this.eventosService.filtrar(
-      this.eventosService.getEventosActuales(),
-      this.textoBusqueda,
-      this.categoriaSeleccionada
-    );
-    this.proximosEventos = this.eventosService.filtrar(
-      this.eventosService.getProximosEventos(),
-      this.textoBusqueda,
-      this.categoriaSeleccionada
-    );
+    // this.eventosActuales = this.eventosService.filtrar(
+    //   this.eventosService.getEventosActuales(),
+    //   this.textoBusqueda,
+    //   this.categoriaSeleccionada
+    // );
+    // this.proximosEventos = this.eventosService.filtrar(
+    //   this.eventosService.getProximosEventos(),
+    //   this.textoBusqueda,
+    //   this.categoriaSeleccionada
+    // );
   }
 
   verDetalle(evento: Evento): void {

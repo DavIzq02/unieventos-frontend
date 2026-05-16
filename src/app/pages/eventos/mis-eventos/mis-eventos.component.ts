@@ -305,4 +305,8 @@ export class MisEventosComponent implements OnInit {
       this.eventoPdfComponent.descargarPDF();
     }
   }
+
+  irAResenas(idEvento: number) {
+    this.router.navigate(['/eventos/resenas', idEvento]);
+  }
 }

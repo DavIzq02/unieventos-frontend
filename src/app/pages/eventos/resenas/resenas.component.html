@@ -1,0 +1,275 @@
+<app-breadcrumb [items]="breadcrumb"></app-breadcrumb>
+
+<!-- ===== ESTADO CARGANDO ===== -->
+<div class="loading-overlay" *ngIf="cargando">
+  <div class="spinner-wrapper">
+    <div class="spinner"></div>
+    <p>Cargando reseñas...</p>
+  </div>
+</div>
+
+<!-- ===== ERROR ===== -->
+<div class="error-state" *ngIf="error && !cargando">
+  <span class="material-symbols-outlined error-icon">error_outline</span>
+  <p>{{ error }}</p>
+</div>
+
+<ng-container *ngIf="!cargando && !error">
+
+  <!-- ===== BANNER PRINCIPAL DEL EVENTO ===== -->
+  <section class="evento-banner" *ngIf="evento">
+    <div class="banner-bg"
+      [style.background-image]="evento.urlImagenPortada ? 'url(' + evento.urlImagenPortada + ')' : 'none'">
+      <div class="banner-overlay"></div>
+    </div>
+    <div class="banner-content">
+      <div class="banner-left">
+        <div class="banner-portada">
+          <img [src]="evento.urlImagenPortada" [alt]="evento.nombre"
+            onerror="this.src='https://cdn-icons-png.flaticon.com/512/1055/1055687.png'">
+        </div>
+        <div class="banner-info">
+          <span class="banner-tipo">{{ evento.nombreTipoEvento }}</span>
+          <h1 class="banner-titulo">{{ evento.nombre }}</h1>
+          <p class="banner-descripcion">{{ evento.descripcion }}</p>
+
+          <!-- Comunidades -->
+          <div class="banner-comunidades" *ngIf="comunidades.length > 0">
+            <span class="comunidades-label">
+              <span class="material-symbols-outlined">groups</span>
+              Dirigido a:
+            </span>
+            <div class="comunidades-tags">
+              <span class="tag-comunidad" *ngFor="let c of comunidades">{{ c.nombre }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calificación promedio -->
+      <div class="banner-rating">
+        <div class="rating-circle" [style.border-color]="getCalificacionColor(calificacionPromedio)">
+          <span class="rating-number">{{ calificacionPromedio || '–' }}</span>
+          <span class="rating-label">/ 5</span>
+        </div>
+        <div class="stars-display">
+          <ng-container *ngFor="let star of getStars(5); let i = index">
+            <span class="material-symbols-outlined star-icon"
+              [class.star-full]="isFullStar(calificacionPromedio, i + 1)"
+              [class.star-half]="isHalfStar(calificacionPromedio, i + 1)"
+              [class.star-empty]="!isFullStar(calificacionPromedio, i + 1) && !isHalfStar(calificacionPromedio, i + 1)">
+              {{ isFullStar(calificacionPromedio, i + 1) ? 'star' : (isHalfStar(calificacionPromedio, i + 1) ?
+              'star_half' : 'star') }}
+            </span>
+          </ng-container>
+        </div>
+        <p class="rating-total">{{ resenas.length }} reseña{{ resenas.length !== 1 ? 's' : '' }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BANNER SIN EVENTO (Vista general) ===== -->
+  <section class="banner-general" *ngIf="!evento">
+    <div class="banner-general-content">
+      <span class="material-symbols-outlined banner-icon">reviews</span>
+      <div>
+        <h1 class="colorTitulo">Reseñas de Eventos</h1>
+        <p>Descubre lo que piensan los participantes de tus eventos</p>
+      </div>
+      <div class="banner-rating-general">
+        <div class="rating-circle-sm" [style.border-color]="getCalificacionColor(calificacionPromedio)">
+          <span>{{ calificacionPromedio || '–' }}</span>
+        </div>
+        <p>{{ resenas.length }} reseña{{ resenas.length !== 1 ? 's' : '' }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTENIDO PRINCIPAL ===== -->
+  <section class="resenas-section">
+    <div class="resenas-container">
+      <aside class="resenas-sidebar">
+        <div class="sidebar-card" *ngIf="!idEvento">
+          <h3 class="sidebar-title">
+            <span class="material-symbols-outlined">filter_list</span>
+            Filtrar reseñas
+          </h3>
+          <div class="filter-group">
+            <label class="filter-label">Buscar</label>
+            <div class="search-input-wrapper">
+              <span class="material-symbols-outlined search-icon">search</span>
+              <input type="text" [(ngModel)]="filtroTexto" placeholder="Evento, usuario, comentario..."
+                class="filter-control">
+            </div>
+          </div>
+
+          <div class="filter-group" style="margin-top: 16px;">
+            <label class="filter-label">Por Evento</label>
+            <select [(ngModel)]="filtroEventoId" class="filter-control select-control">
+              <option [value]="0">Todos los eventos</option>
+              <option *ngFor="let ev of listaEventosUnicos" [value]="ev.id">{{ ev.nombre }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <h3 class="sidebar-title">
+            <span class="material-symbols-outlined">bar_chart</span>
+            Distribución
+          </h3>
+          <div class="dist-list">
+            <div class="dist-item" *ngFor="let d of distribucionCalificaciones" (click)="setFiltro(d.estrellas)"
+              [class.activo]="filtroCalificacion === d.estrellas">
+              <div class="dist-estrellas">
+                <ng-container *ngFor="let s of getStars(d.estrellas)">
+                  <span class="material-symbols-outlined dist-star">star</span>
+                </ng-container>
+              </div>
+              <div class="dist-bar-wrap">
+                <div class="dist-bar">
+                  <div class="dist-bar-fill" [style.width.%]="d.porcentaje"></div>
+                </div>
+              </div>
+              <span class="dist-count">{{ d.cantidad }}</span>
+            </div>
+          </div>
+          <button class="btn-limpiar" *ngIf="filtroCalificacion !== null || filtroTexto !== '' || filtroEventoId !== 0"
+            (click)="filtroCalificacion = null; filtroTexto = ''; filtroEventoId = 0">
+            <span class="material-symbols-outlined">filter_alt_off</span>
+            Limpiar filtros
+          </button>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="sidebar-card stats-card">
+          <h3 class="sidebar-title">
+            <span class="material-symbols-outlined">insights</span>
+            Estadísticas
+          </h3>
+          <div class="stat-item">
+            <span class="stat-label">Promedio</span>
+            <span class="stat-value" [style.color]="getCalificacionColor(calificacionPromedio)">
+              <span class="material-symbols-outlined" style="color: #FF9800;">star</span> {{ calificacionPromedio }}
+            </span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Total reseñas</span>
+            <span class="stat-value">{{ resenas.length }}</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Con imágenes</span>
+            <span class="stat-value">{{ resenas | resenasConImagen }}</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Grid de reseñas -->
+      <main class="resenas-main">
+        <div class="resenas-header">
+          <h2 class="resenas-titulo">
+            <span class="material-symbols-outlined">chat_bubble</span>
+            Reseñas
+            <span class="badge-count" *ngIf="filtroCalificacion !== null">
+              ({{ resenasFiltradas.length }} de {{ resenas.length }})
+            </span>
+          </h2>
+          <div class="filtro-chips" *ngIf="filtroCalificacion !== null">
+            <span class="chip-activo">
+              {{ filtroCalificacion }}
+              <span class="material-symbols-outlined" style="font-size: 14px;">star</span>
+              <button (click)="setFiltro(null)" class="chip-close">✕</button>
+            </span>
+          </div>
+        </div>
+
+        <!-- Sin reseñas -->
+        <div class="empty-state" *ngIf="resenasFiltradas.length === 0">
+          <span class="material-symbols-outlined empty-icon">sentiment_neutral</span>
+          <h3>Sin reseñas</h3>
+          <p *ngIf="filtroCalificacion !== null">No hay reseñas con {{ filtroCalificacion }} estrella{{
+            filtroCalificacion !== 1 ? 's' : '' }}</p>
+          <p *ngIf="filtroCalificacion === null">Aún no hay reseñas para este evento</p>
+        </div>
+
+        <!-- Tarjetas de reseñas -->
+        <div class="resenas-grid">
+          <article class="resena-card" *ngFor="let resena of resenasFiltradas">
+
+            <!-- Cabecera de la card -->
+            <div class="card-header">
+              <div class="usuario-avatar">
+                <img [src]="getFotoUsuario(resena)"
+                  [alt]="(resena.nombreUsuario || '') + ' ' + (resena.apellidoUsuario || '')"
+                  onerror="this.src='https://ui-avatars.com/api/?name=U&background=1f5fa8&color=fff&size=80'">
+              </div>
+              <div class="usuario-info">
+                <h4 class="usuario-nombre">
+                  {{ resena.nombreUsuario || 'Usuario' }} {{ resena.apellidoUsuario || '' }}
+                </h4>
+                <p class="resena-fecha" *ngIf="resena.fechaCreacion">
+                  <span class="material-symbols-outlined"
+                    style="font-size: 14px; vertical-align: middle;">calendar_today</span>
+                  {{ formatearFecha(resena.fechaCreacion) }}
+                </p>
+              </div>
+              <div class="card-calificacion">
+                <div class="cal-badge" [style.background-color]="getCalificacionColor(resena.calificacion)">
+                  <span class="material-symbols-outlined" style="font-size: 15px;">star</span>
+                  {{ resena.calificacion }}
+                </div>
+                <div class="mini-stars">
+                  <ng-container *ngFor="let s of getStars(5); let i = index">
+                    <span class="material-symbols-outlined mini-star"
+                      [class.lit]="isFullStar(resena.calificacion, i + 1)">star</span>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+
+            <!-- Nombre del evento (para vista general) -->
+            <div class="card-evento-nombre" *ngIf="!evento && resena.nombreEvento">
+              <span class="material-symbols-outlined" style="font-size: 14px;">event</span>
+              {{ resena.nombreEvento }}
+            </div>
+
+            <!-- Comentario -->
+            <div class="card-comentario" *ngIf="resena.descripcion">
+              <h5 class="resena-titulo-card" *ngIf="resena.titulo">{{ resena.titulo }}</h5>
+              <p>{{ resena.descripcion }}</p>
+            </div>
+
+            <!-- Imágenes multimedia -->
+            <div class="card-media" *ngIf="resena.multimedia && resena.multimedia.length > 0">
+              <div class="media-grid" [class.media-single]="resena.multimedia.length === 1"
+                [class.media-double]="resena.multimedia.length === 2"
+                [class.media-multi]="resena.multimedia.length >= 3">
+                <ng-container *ngFor="let media of resena.multimedia; let idx = index">
+                  <div class="media-item" (click)="abrirImagen(media.urlMultimedia)" *ngIf="idx < 4"
+                    [class.media-overlay-item]="idx === 3 && resena.multimedia!.length > 4">
+                    <img [src]="media.urlMultimedia" [alt]="'Imagen ' + (idx + 1)"
+                      onerror="this.src='https://cdn-icons-png.flaticon.com/512/4076/4076549.png'">
+                    <div class="media-more-overlay" *ngIf="idx === 3 && resena.multimedia!.length > 4">
+                      <span>+{{ resena.multimedia!.length - 4 }}</span>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+
+          </article>
+        </div>
+      </main>
+    </div>
+  </section>
+
+</ng-container>
+
+<!-- ===== LIGHTBOX ===== -->
+<div class="lightbox-overlay" *ngIf="imagenAmpliada" (click)="cerrarImagen()">
+  <button class="lightbox-close" (click)="cerrarImagen()">
+    <span class="material-symbols-outlined">close</span>
+  </button>
+  <div class="lightbox-content" (click)="$event.stopPropagation()">
+    <img [src]="imagenAmpliada" alt="Imagen ampliada">
+  </div>
+</div>

@@ -32,6 +32,13 @@
                             <li *ngFor="let com of listaComunidadesEvento">{{ com.nombre }}</li>
                         </ul>
                     </div>
+
+                    <div class="acciones-evento-asistencia" style="margin-top: 15px;">
+                        <button class="btn-resenas-link" (click)="irAResenas(eventoDetalle.id)">
+                            <span class="material-symbols-outlined" style="font-size: 18px;">reviews</span>
+                            Ver reseñas del evento
+                        </button>
+                    </div>
                 </div>
             </div>
 
